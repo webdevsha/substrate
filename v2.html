@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Substrate — Deeptech Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--basil:#3B5A40;--passata:#C97956;--lemons:#D3C97E;--fresh:#5C8462;--minty:#CBD9C8;--cream:#F3F0DE;--ink:#22301F;--gD:#a8452f}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--ink);font-size:14px;line-height:1.55}
+h1,h2,h3{font-family:'DM Serif Display',serif;font-weight:400}
+.mono{font-family:'JetBrains Mono',monospace}
+header{padding:20px 30px 14px;border-bottom:2px solid var(--basil)}
+header h1{font-size:26px;color:var(--basil)}
+header .sub{font-size:12px;color:var(--fresh)}
+.stages{display:flex;gap:0;background:#fff;border-bottom:1px solid var(--minty);overflow-x:auto}
+.stages div{font-size:12px;font-weight:600;padding:11px 18px;color:var(--minty);white-space:nowrap;border-bottom:3px solid transparent}
+.stages div.done{color:var(--fresh)}
+.stages div.now{color:var(--basil);border-bottom-color:var(--passata)}
+main{max-width:1100px;margin:0 auto;padding:26px 30px 60px}
+.card{background:#fff;border:1px solid var(--minty);border-radius:8px;padding:22px;margin-bottom:18px}
+.card h2{font-size:20px;color:var(--basil);margin-bottom:6px}
+.card .note{font-size:12.5px;color:var(--fresh);margin-bottom:14px}
+textarea,input[type=text]{width:100%;padding:10px;border:1px solid var(--minty);border-radius:6px;font-family:'Inter';font-size:13.5px;background:var(--cream)}
+textarea{min-height:90px;resize:vertical}
+button.primary{background:var(--basil);color:#fff;border:none;padding:10px 22px;border-radius:6px;font-family:'Inter';font-weight:600;font-size:13.5px;cursor:pointer;margin-top:12px}
+button.primary:disabled{background:var(--minty);cursor:wait}
+button.ghost{background:none;border:1px solid var(--fresh);color:var(--basil);padding:8px 16px;border-radius:6px;font-weight:600;font-size:12.5px;cursor:pointer;margin:10px 8px 0 0}
+.presets{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.stake{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 4px}
+.stake label{display:flex;align-items:center;gap:6px;font-size:13px;background:var(--cream);border:1px solid var(--minty);border-radius:6px;padding:7px 12px;cursor:pointer}
+.q{margin-bottom:16px;padding-bottom:14px;border-bottom:1px dashed var(--minty)}
+.q .qt{font-weight:600;font-size:13.5px;margin-bottom:4px}
+.q .why{font-size:11.5px;color:var(--fresh);margin-bottom:7px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:12.5px;padding:6px 13px;border-radius:16px;border:1.5px solid var(--minty);background:#fff;cursor:pointer;user-select:none}
+.chip.on{border-color:var(--basil);background:var(--basil);color:#fff}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.pcard{border:1px solid var(--minty);border-radius:8px;padding:12px 14px;background:var(--cream);cursor:pointer;position:relative}
+.pcard.on{border-color:var(--basil);box-shadow:0 0 0 2px var(--minty)}
+.pcard .pn{font-weight:600;font-size:13px;padding-right:30px}
+.pcard .pr{font-family:'JetBrains Mono';font-size:11px;color:var(--passata);margin:3px 0}
+.pcard .pw{font-size:11.5px;color:var(--fresh)}
+.badge{position:absolute;top:10px;right:10px;font-family:'JetBrains Mono';font-size:10px;font-weight:600;padding:1px 7px;border-radius:3px;color:#fff}
+.badge.A{background:var(--basil)}.badge.B{background:var(--fresh)}.badge.C{background:var(--passata)}.badge.D{background:var(--gD)}
+.sc{display:flex;align-items:stretch;gap:0;overflow-x:auto;padding:8px 0}
+.scn{min-width:150px;background:#fff;border:1.5px solid var(--fresh);border-radius:8px;padding:10px 12px;font-size:12px}
+.scn b{display:block;font-size:12.5px;color:var(--basil);margin-bottom:3px}
+.scn .risk{margin-top:6px;font-size:11px;color:var(--gD)}
+.arrow{align-self:center;padding:0 8px;color:var(--fresh);font-size:18px}
+.out2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:800px){.out2{grid-template-columns:1fr}}
+pre.skel{background:var(--cream);border:1px solid var(--minty);border-radius:6px;padding:14px;font-family:'JetBrains Mono';font-size:11.5px;white-space:pre-wrap;max-height:420px;overflow:auto}
+.stat{display:inline-block;background:var(--cream);border-left:4px solid var(--passata);border-radius:6px;padding:10px 16px;margin:0 10px 10px 0}
+.stat .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--fresh)}
+.stat .v{font-family:'DM Serif Display';font-size:23px;color:var(--basil)}
+.viewtabs{display:flex;gap:8px;margin-bottom:12px}
+.viewtabs button{border:1px solid var(--minty);background:#fff;border-radius:16px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--fresh);cursor:pointer}
+.viewtabs button.on{background:var(--basil);color:#fff;border-color:var(--basil)}
+.src{font-size:11.5px;background:#fff;border:1px solid var(--minty);border-left:3px solid var(--lemons);border-radius:5px;padding:8px 11px;margin-bottom:8px}
+.err{color:var(--gD);font-size:12.5px;margin-top:8px}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--minty);border-top-color:var(--basil);border-radius:50%;animation:s .8s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes s{to{transform:rotate(360deg)}}
+.hidden{display:none}
+.range{display:flex;gap:8px;align-items:center;margin-top:6px}
+.range input{width:110px;padding:5px;font-family:'JetBrains Mono';font-size:11px}
+footer{max-width:1100px;margin:0 auto;padding:0 30px 30px;font-size:11px;color:var(--fresh)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Substrate</h1>
+  <div class="sub">Deeptech intelligence · describe the technology → graded parameters → live research → uncertainty-bridged data room. One instrument, three audiences: engineering, investor, client.</div>
+</header>
+<div class="stages" id="stages">
+  <div class="now">1 · Describe</div><div>2 · Question skeleton</div><div>3 · Parameters</div><div>4 · Live research</div><div>5 · Supply chain</div><div>6 · Data room & viz</div>
+</div>
+<main>
+
+<!-- ========== STAGE 1 ========== -->
+<section id="s1" class="card">
+  <h2>What are you building?</h2>
+  <div class="note">Plain language. The skeleton adapts to the tech — the platform's job is to decompose it into claims, parameters, and uncertainties that all three audiences can trust.</div>
+  <textarea id="techDesc" placeholder="e.g. A constellation of space-based solar power satellites beaming energy to rectenna ground stations in Malaysia, selling baseload clean power to utilities…"></textarea>
+  <div class="note" style="margin-top:12px">Who needs certainty from this? (shapes the outputs)</div>
+  <div class="stake">
+    <label><input type="checkbox" class="stk" value="investor" checked> Investor (DD-grade ranges)</label>
+    <label><input type="checkbox" class="stk" value="client" checked> Client / procurer (price & delivery certainty)</label>
+    <label><input type="checkbox" class="stk" value="engineering" checked> Engineering team (honest uncertainty)</label>
+  </div>
+  <div class="presets">
+    <button class="ghost" onclick="loadPreset('sbsp')">Preset: SBSP (Aphelia pattern)</button>
+    <button class="ghost" onclick="loadPreset('compute')">Preset: Sovereign compute cluster</button>
+  </div>
+  <button class="primary" id="b1" onclick="stage2()">Generate question skeleton →</button>
+  <div class="err" id="e1"></div>
+</section>
+
+<!-- ========== STAGE 2 ========== -->
+<section id="s2" class="card hidden">
+  <h2>Question skeleton</h2>
+  <div class="note">These are the questions the data room must answer before anyone external asks them. Click the answers that apply — or type your own. Every question maps to a parameter category: <b>unit economics · physics/performance · supply chain · regulatory · market</b>.</div>
+  <div id="qlist"></div>
+  <button class="primary" id="b2" onclick="stage3()">Extract parameters →</button>
+</section>
+
+<!-- ========== STAGE 3 ========== -->
+<section id="s3" class="card hidden">
+  <h2>Parameters & uncertainty grades</h2>
+  <div class="note">Click to include in the model. Grades: <span class="mono">A</span> measured/contracted · <span class="mono">B</span> published/verifiable · <span class="mono">C</span> internal projection · <span class="mono">D</span> speculative. <b>The contest range is the honest uncertainty</b> — this is what gets bridged, not hidden.</div>
+  <div class="pgrid" id="pgrid"></div>
+  <button class="primary" onclick="stage4()">Continue → live research on selected</button>
+</section>
+
+<!-- ========== STAGE 4 ========== -->
+<section id="s4" class="card hidden">
+  <h2>Live research pull</h2>
+  <div class="note">Claude (with web search) corroborates each selected parameter: external estimates, who publishes them, and whether they tighten or widen your contest range. Requires running inside claude.ai artifacts; otherwise skip — the instrument still works with your grades.</div>
+  <button class="primary" id="b4" onclick="research()">Pull corroboration</button>
+  <button class="ghost" onclick="stage5()">Skip →</button>
+  <div id="rout" style="margin-top:14px"></div>
+</section>
+
+<!-- ========== STAGE 5 ========== -->
+<section id="s5" class="card hidden">
+  <h2>Supply chain map</h2>
+  <div class="note">Where the tech physically comes from, and where cost uncertainty concentrates. Risk notes mark the seams — handoffs are where uncertainty (and provenance) gets lost.</div>
+  <div class="sc" id="scmap"></div>
+  <button class="primary" onclick="stage6()">Generate data room & visualization →</button>
+</section>
+
+<!-- ========== STAGE 6 ========== -->
+<section id="s6" class="hidden">
+  <div class="card">
+    <h2>Cost & uncertainty visualization</h2>
+    <div class="note">The bridge itself: one model, three renderings. Same parameters, different guarantees.</div>
+    <div class="viewtabs">
+      <button class="on" onclick="setView('engineering',this)">Engineering view</button>
+      <button onclick="setView('investor',this)">Investor view</button>
+      <button onclick="setView('client',this)">Client view</button>
+    </div>
+    <div id="viewstats"></div>
+    <div style="max-height:320px"><canvas id="cMain"></canvas></div>
+    <div style="max-height:300px;margin-top:16px"><canvas id="cTornado"></canvas></div>
+  </div>
+  <div class="out2">
+    <div class="card"><h2>Data room skeleton</h2><div class="note">Structured to pre-answer the question skeleton. Copy into your docs.</div><pre class="skel" id="droom"></pre><button class="ghost" onclick="dl('data_room_skeleton.md',$('droom').textContent)">Download .md</button></div>
+    <div class="card"><h2>Tech spec skeleton</h2><div class="note">Engineering-facing; every spec slot carries a grade placeholder.</div><pre class="skel" id="tspec"></pre><button class="ghost" onclick="dl('tech_spec_skeleton.md',$('tspec').textContent)">Download .md</button></div>
+  </div>
+</section>
+</main>
+<footer>Substrate MVP · CetaLabs / Irori · Claims are graded, never adjudicated · Presets: Aphelia MCD v5 pattern (values bracketed where not public), compute cluster [UNVERIFIED] schema demo.</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let STATE={desc:"",stakeholders:[],questions:[],params:[],supply:[],research:{},view:'engineering',preset:null};
+
+/* ============ PRESETS (work offline, no API needed) ============ */
+const PRESETS={
+sbsp:{
+ desc:"A constellation of space-based solar power (SBSP) satellites beaming microwave energy to rectenna ground stations, selling firm baseload clean power to utilities and industrial clients in Malaysia.",
+ questions:[
+  {q:"What does one deployed unit cost, and how does per-unit cost fall with volume?",why:"Unit economics — investors price the learning curve, clients price the offtake",cat:"unit economics",opts:["Single-unit cost known from BOM","Cost curve projected from supplier quotes","Learning rate assumed from analogues"]},
+  {q:"What is the end-to-end efficiency chain, and which link is least proven?",why:"Physics — each efficiency factor is a separately contestable claim",cat:"physics",opts:["All factors lab-measured","Some factors from literature only","Chain multiplied from component specs"]},
+  {q:"What fraction of cost rides on a single supplier or single launch provider?",why:"Supply chain — concentration is where cost uncertainty explodes",cat:"supply chain",opts:["Multi-sourced","Single-sourced with alternatives priced","Single-sourced, no alternative"]},
+  {q:"Which regulatory approvals gate revenue, and what is their timeline uncertainty?",why:"Regulatory — spectrum, safety zones, grid interconnection",cat:"regulatory",opts:["Precedent exists","First-of-kind in jurisdiction","Unclear authority"]},
+  {q:"What price does the client benchmark you against, and on what basis (capex/W, LCOE, PPA)?",why:"Market — the client's yardstick decides which of your numbers matters",cat:"market",opts:["LCOE vs grid","Capex/W vs alternatives","PPA price vs incumbent"]}
+ ],
+ params:[
+  {n:"Launch cost to orbit",u:"$/kg",lo:850,hi:8000,def:850,g:"C",w:"Largest single swing; provider projections vs contracted prices diverge ~10×",on:true},
+  {n:"Satellite unit cost at volume",u:"$M/sat",lo:12.9,hi:27.9,def:12.9,g:"C",w:"Learning-curve claim; floor value assumes 50-unit fleet",on:true},
+  {n:"Constellation size",u:"sats",lo:1,hi:50,def:50,g:"A",w:"Choice variable; amortizes NRE",on:true},
+  {n:"Capacity factor",u:"%",lo:30,hi:70,def:59,g:"C",w:"The core claim vs terrestrial alternatives; needs external corroboration",on:true},
+  {n:"Operational lifespan",u:"yr",lo:10,hi:25,def:25,g:"C",w:"Degradation model; internal doc uses three different values",on:true},
+  {n:"WACC / discount rate",u:"%",lo:0,hi:15,def:8,g:"D",w:"Absent from internal docs; investors will apply 7–10% regardless",on:true},
+  {n:"Rectenna land cost",u:"$M/site",lo:1,hi:15,def:4,g:"D",w:"Site-dependent (IRDA-zone vs urban-adjacent); drives client-side price",on:true},
+  {n:"Ground station count",u:"sites",lo:1,hi:6,def:2,g:"C",w:"Coverage vs land+interconnect cost trade",on:false},
+  {n:"O&M annual cost",u:"% capex/yr",lo:1,hi:5,def:2,g:"D",w:"No operating history exists for the class",on:false}
+ ],
+ supply:[
+  {s:"GaN MMICs & tiles",d:"Semiconductor fabs (TW/KR/MY OSAT)",r:"Export-control exposure; single-region concentration"},
+  {s:"Thin-film solar",d:"Roll-to-roll lines (planned in-house MY)",r:"In-housing timeline is itself a C-grade claim"},
+  {s:"Bus & structure",d:"CFRP/Mg suppliers + integration",r:"Unprecedented scale for cantilevered structures"},
+  {s:"Launch",d:"Launch provider market",r:"THE seam: $850–8,000/kg range crosses providers"},
+  {s:"Ground rectenna",d:"Local EPC + land (IRDA/state)",r:"Land price + interconnect approval uncertainty"},
+  {s:"Offtake",d:"Utility / industrial PPA",r:"Client benchmarks against grid + solar+BESS"}
+ ]},
+compute:{
+ desc:"A sovereign AI compute cluster for regional model training and inference, positioning limited national resources (power, capital, talent) at the highest-leverage points of the compute supply chain.",
+ questions:[
+  {q:"What is the effective $/GPU-hour, and how exposed is it to accelerator price shocks?",why:"Unit economics — export controls act as capex multipliers",cat:"unit economics",opts:["Contracted pricing","Spot pricing with shock scenarios","Aspirational pricing"]},
+  {q:"Where does power come from and at what price certainty?",why:"Physics/infra — energy is the recurring cost floor",cat:"physics",opts:["PPA signed","Grid tariff assumed","Generation co-located (planned)"]},
+  {q:"Which supply chain stages can be played domestically with current resources?",why:"Supply chain — the 'critical areas we can play' question",cat:"supply chain",opts:["Assembly/integration","Data center ops","Cooling/power infra","Software/orchestration layer"]},
+  {q:"What compute governance regimes constrain acquisition or operation?",why:"Regulatory — export controls, data residency, reporting thresholds",cat:"regulatory",opts:["Below thresholds","Threshold-adjacent","Restricted-list exposure"]},
+  {q:"Who is the anchor customer and what do they benchmark against?",why:"Market — hyperscaler cloud prices set the client's yardstick",cat:"market",opts:["Government/sovereign workloads","Regional enterprises","Research institutions"]}
+ ],
+ params:[
+  {n:"Accelerator unit price",u:"$k",lo:15,hi:45,def:30,g:"D",w:"[UNVERIFIED] Market price; volatile",on:true},
+  {n:"Export-control shock",u:"× capex",lo:1,hi:2.5,def:1.2,g:"D",w:"Event-shock lever; scenario, not forecast",on:true},
+  {n:"Cluster size",u:"GPUs",lo:1000,hi:50000,def:10000,g:"A",w:"Choice variable",on:true},
+  {n:"Electricity price",u:"$/kWh",lo:0.03,hi:0.30,def:0.10,g:"C",w:"Shared lever with any energy-producing module",on:true},
+  {n:"PUE",u:"ratio",lo:1.1,hi:1.6,def:1.3,g:"C",w:"Cooling regime dependent (tropical siting penalty)",on:true},
+  {n:"Utilization",u:"%",lo:40,hi:95,def:70,g:"C",w:"Demand-side uncertainty; the honest number is rarely shown",on:true},
+  {n:"Depreciation horizon",u:"yr",lo:3,hi:6,def:4,g:"C",w:"Accelerator obsolescence pace",on:false}
+ ],
+ supply:[
+  {s:"Accelerators",d:"Fab → packaging → OEM",r:"Export-control seam; allocation queues"},
+  {s:"Power & cooling",d:"Utility PPA / on-site gen",r:"Tariff certainty; tropical PUE penalty"},
+  {s:"DC build/retrofit",d:"Local EPC",r:"Playable domestically — capex not import-gated"},
+  {s:"Network/interconnect",d:"Optics + carriers",r:"Secondary control exposure"},
+  {s:"Orchestration & ops",d:"Software layer + talent",r:"Playable domestically — talent-gated not capital-gated"},
+  {s:"Demand",d:"Sovereign + enterprise workloads",r:"Utilization risk lives here"}
+ ]}
+};
+
+function loadPreset(k){STATE.preset=k;$('techDesc').value=PRESETS[k].desc;}
+function stakeholders(){return [...document.querySelectorAll('.stk:checked')].map(x=>x.value);}
+function setStage(i){[...$('stages').children].forEach((d,j)=>{d.className=j<i?'done':(j===i?'now':'');});}
+
+/* ============ CLAUDE API (Layer: live intelligence) ============ */
+async function ask(prompt,useSearch=false){
+ const body={model:"claude-sonnet-4-6",max_tokens:1000,messages:[{role:"user",content:prompt}]};
+ if(useSearch)body.tools=[{type:"web_search_20250305",name:"web_search"}];
+ const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+ const d=await r.json();
+ if(!d.content)throw new Error("No response");
+ return d.content.filter(b=>b.type==="text").map(b=>b.text).join("\n");
+}
+function parseJSON(t){return JSON.parse(t.replace(/```json|```/g,"").trim());}
+
+/* ============ STAGE 2: question skeleton ============ */
+async function stage2(){
+ STATE.desc=$('techDesc').value.trim();STATE.stakeholders=stakeholders();
+ if(!STATE.desc){$('e1').textContent="Describe the technology first (or load a preset).";return;}
+ $('e1').textContent="";
+ if(STATE.preset&&PRESETS[STATE.preset].desc===STATE.desc){STATE.questions=PRESETS[STATE.preset].questions;}
+ else{
+  $('b1').disabled=true;$('b1').innerHTML='<span class="spin"></span>Generating skeleton…';
+  try{
+   const t=await ask(`You are a deeptech due-diligence analyst. A founder describes their technology:\n"${STATE.desc}"\nGenerate exactly 5 due-diligence questions the founder's data room must answer, one per category: unit economics, physics/performance, supply chain, regulatory, market. Respond ONLY with JSON, no preamble, no markdown fences: [{"q":"question","why":"one-line why this matters for cost certainty","cat":"category","opts":["3 plausible short answers"]}]`);
+   STATE.questions=parseJSON(t);
+  }catch(e){$('e1').textContent="API unavailable here — load a preset or run inside claude.ai. ("+e.message+")";$('b1').disabled=false;$('b1').textContent="Generate question skeleton →";return;}
+  $('b1').disabled=false;$('b1').textContent="Generate question skeleton →";
+ }
+ $('qlist').innerHTML=STATE.questions.map((x,i)=>`<div class="q"><div class="qt">${i+1}. ${x.q}</div><div class="why">${x.cat} · ${x.why}</div><div class="chips">${x.opts.map(o=>`<span class="chip" onclick="this.classList.toggle('on')">${o}</span>`).join("")}<span class="chip" onclick="const v=prompt('Your answer:');if(v){this.insertAdjacentHTML('beforebegin','<span class=\\'chip on\\'>'+v+'</span>')}">+ own answer</span></div></div>`).join("");
+ $('s2').classList.remove('hidden');setStage(1);$('s2').scrollIntoView({behavior:'smooth'});
+}
+
+/* ============ STAGE 3: parameters ============ */
+async function stage3(){
+ const answers=[...document.querySelectorAll('#qlist .chip.on')].map(c=>c.textContent);
+ if(STATE.preset){STATE.params=JSON.parse(JSON.stringify(PRESETS[STATE.preset].params));}
+ else{
+  $('b2').disabled=true;$('b2').innerHTML='<span class="spin"></span>Extracting…';
+  try{
+   const t=await ask(`Technology: "${STATE.desc}". Founder's DD answers: ${JSON.stringify(answers)}.\nExtract 7-9 cost-model parameters. For each: name, unit, plausible low/high contest range (numbers), default, evidence grade (A measured, B published, C internal projection, D speculative), one-line why it is contested. Respond ONLY with JSON: [{"n":"","u":"","lo":0,"hi":0,"def":0,"g":"C","w":"","on":true}]`);
+   STATE.params=parseJSON(t);
+  }catch(e){alert("API unavailable — using generic schema. "+e.message);STATE.params=PRESETS.compute.params;}
+  $('b2').disabled=false;$('b2').textContent="Extract parameters →";
+ }
+ renderParams();
+ $('s3').classList.remove('hidden');setStage(2);$('s3').scrollIntoView({behavior:'smooth'});
+}
+function renderParams(){
+ $('pgrid').innerHTML=STATE.params.map((p,i)=>`<div class="pcard ${p.on?'on':''}" onclick="togP(${i},event)">
+  <span class="badge ${p.g}">${p.g}</span><div class="pn">${p.n}</div>
+  <div class="pr">${p.lo} – ${p.hi} ${p.u} · default ${p.def}</div><div class="pw">${p.w}</div>
+  <div class="range" onclick="event.stopPropagation()">
+   <input type="text" value="${p.lo}" onchange="STATE.params[${i}].lo=+this.value"> –
+   <input type="text" value="${p.hi}" onchange="STATE.params[${i}].hi=+this.value">
+  </div></div>`).join("");
+}
+function togP(i,e){if(e.target.tagName==='INPUT')return;STATE.params[i].on=!STATE.params[i].on;renderParams();}
+function stage4(){$('s4').classList.remove('hidden');setStage(3);$('s4').scrollIntoView({behavior:'smooth'});}
+
+/* ============ STAGE 4: live research ============ */
+async function research(){
+ const sel=STATE.params.filter(p=>p.on).slice(0,5);
+ $('b4').disabled=true;$('b4').innerHTML='<span class="spin"></span>Researching…';$('rout').innerHTML="";
+ for(const p of sel){
+  try{
+   const t=await ask(`Web-search for independent, citable estimates of "${p.n}" in the context of: ${STATE.desc.slice(0,180)}. Founder's range: ${p.lo}-${p.hi} ${p.u}. In under 80 words: report 1-2 external estimates with named sources (org + year), and state whether they TIGHTEN, WIDEN, or SIT WITHIN the founder's range. Paraphrase, no quotes over 15 words.`,true);
+   STATE.research[p.n]=t;
+   $('rout').insertAdjacentHTML('beforeend',`<div class="src"><b>${p.n}</b> — ${t}</div>`);
+  }catch(e){$('rout').insertAdjacentHTML('beforeend',`<div class="src"><b>${p.n}</b> — research unavailable (${e.message}); grade stands at ${p.g}.</div>`);}
+ }
+ $('b4').disabled=false;$('b4').textContent="Pull corroboration";
+ $('rout').insertAdjacentHTML('beforeend','<button class="primary" onclick="stage5()">Continue → supply chain</button>');
+}
+
+/* ============ STAGE 5: supply chain ============ */
+async function stage5(){
+ if(STATE.preset){STATE.supply=PRESETS[STATE.preset].supply;}
+ else if(!STATE.supply.length){
+  try{
+   const t=await ask(`Technology: "${STATE.desc}". List the 5-7 supply chain stages from raw inputs to customer, each with where it is typically sourced and its main cost-uncertainty risk. Respond ONLY with JSON: [{"s":"stage","d":"typical source","r":"risk note"}]`);
+   STATE.supply=parseJSON(t);
+  }catch(e){STATE.supply=[{s:"Inputs",d:"[map manually]",r:"API unavailable"},{s:"Manufacture",d:"—",r:"—"},{s:"Deploy",d:"—",r:"—"},{s:"Operate",d:"—",r:"—"},{s:"Sell",d:"—",r:"—"}];}
+ }
+ $('scmap').innerHTML=STATE.supply.map((n,i)=>`<div class="scn"><b>${i+1}. ${n.s}</b>${n.d}<div class="risk">⚠ ${n.r}</div></div>${i<STATE.supply.length-1?'<div class="arrow">→</div>':''}`).join("");
+ $('s5').classList.remove('hidden');setStage(4);$('s5').scrollIntoView({behavior:'smooth'});
+}
+
+/* ============ STAGE 6: model + views + skeletons ============ */
+let chM,chT;
+function activeParams(){return STATE.params.filter(p=>p.on);}
+// generic cost model: treats each parameter as multiplicative/additive contributor via normalized position in its range.
+// Honest simplification: exact domain equations are Phase-1 per-module work; this MVP shows STRUCTURE of uncertainty.
+function unitCost(overrides={}){
+ let cost=100; // indexed base = 100
+ activeParams().forEach(p=>{
+  const v=overrides[p.n]??p.def;
+  const norm=(v-p.lo)/Math.max(p.hi-p.lo,1e-9);      // 0..1
+  const dir=/WACC|price|cost|shock|PUE|land|O&M|Depreciation/i.test(p.n)?1:-1; // costs up, performance down
+  cost*= (1 + dir*(norm-0.5)*0.6);
+ });
+ return cost;
+}
+function stage6(){
+ $('s6').classList.remove('hidden');setStage(5);renderView();$('s6').scrollIntoView({behavior:'smooth'});
+ $('droom').textContent=dataRoomSkeleton();$('tspec').textContent=techSpecSkeleton();
+}
+function setView(v,btn){STATE.view=v;document.querySelectorAll('.viewtabs button').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderView();}
+function renderView(){
+ const ps=activeParams();
+ const base=unitCost();
+ const lo=unitCost(Object.fromEntries(ps.map(p=>[p.n,/WACC|price|cost|shock|PUE|land|O&M|Depreciation/i.test(p.n)?p.lo:p.hi])));
+ const hi=unitCost(Object.fromEntries(ps.map(p=>[p.n,/WACC|price|cost|shock|PUE|land|O&M|Depreciation/i.test(p.n)?p.hi:p.lo])));
+ const V=STATE.view;
+ const stats={
+  engineering:[["Indexed unit cost (default)",base.toFixed(0)],["Honest range (all contest ranges)",lo.toFixed(0)+" – "+hi.toFixed(0)],["Parameters carried",ps.length+" ("+ps.filter(p=>'CD'.includes(p.g)).length+" at C/D)"]],
+  investor:[["Base case (index)",base.toFixed(0)],["Downside (P90-style, index)",hi.toFixed(0)],["Grade profile","A/B: "+ps.filter(p=>'AB'.includes(p.g)).length+" · C/D: "+ps.filter(p=>'CD'.includes(p.g)).length]],
+  client:[["Indicative price band (index)",(base*0.95).toFixed(0)+" – "+(base*1.15).toFixed(0)],["Firm after (gating items)",ps.filter(p=>p.g==='D').length+" D-grade items resolved"],["Delivery-relevant uncertainties",ps.filter(p=>/land|regulatory|util|lifespan/i.test(p.n)).length]]
+ }[V];
+ $('viewstats').innerHTML=stats.map(s=>`<div class="stat"><div class="k">${s[0]}</div><div class="v">${s[1]}</div></div>`).join("");
+ // main chart: cost index across each parameter swept alone (engineering: all; investor: top C/D; client: price band)
+ const labels=ps.map(p=>p.n);
+ const sweepLo=ps.map(p=>unitCost({[p.n]:p.lo})), sweepHi=ps.map(p=>unitCost({[p.n]:p.hi}));
+ if(chM)chM.destroy();
+ chM=new Chart($('cMain'),{type:'bar',data:{labels,datasets:[
+  {label:'unit cost index @ param low',data:sweepLo,backgroundColor:'#5C8462'},
+  {label:'@ param high',data:sweepHi,backgroundColor:'#C97956'},
+  {label:'default',data:ps.map(_=>base),type:'line',borderColor:'#22301F',borderDash:[5,4],pointRadius:0}]},
+  options:{plugins:{legend:{labels:{font:{family:'Inter',size:11}}},title:{display:true,text:V==='client'?'Price sensitivity (what could move your quote)':(V==='investor'?'Base vs downside by assumption':'Per-parameter sweep, all else at default')}},scales:{y:{title:{display:true,text:'indexed unit cost (default=100)'}}}}});
+ // tornado
+ const tor=ps.map(p=>({p:`${p.n} [${p.g}]`,v:Math.abs(unitCost({[p.n]:p.hi})-unitCost({[p.n]:p.lo}))})).sort((a,b)=>b.v-a.v);
+ if(chT)chT.destroy();
+ chT=new Chart($('cTornado'),{type:'bar',data:{labels:tor.map(t=>t.p),datasets:[{label:'cost-index swing across contest range',data:tor.map(t=>t.v),backgroundColor:tor.map(t=>t.p.includes('[D]')?'#a8452f':(t.p.includes('[C]')?'#C97956':'#3B5A40'))}]},
+  options:{indexAxis:'y',plugins:{legend:{display:false},title:{display:true,text:'Which disagreement matters most (grade-colored)'}},scales:{x:{title:{display:true,text:'Δ index'}}}}});
+}
+function dataRoomSkeleton(){
+ const ps=activeParams();
+ return `# DATA ROOM — ${STATE.desc.slice(0,80)}…
+Generated by Substrate · ${new Date().toISOString().slice(0,10)} · Audiences: ${STATE.stakeholders.join(", ")}
+
+## 0. Reading guide
+Every number carries an evidence grade (A measured · B published · C internal · D speculative)
+and a contest range. Ranges are commitments to honesty, not weakness.
+
+## 1. Executive summary
+[Thesis in 5 lines. Headline unit economics stated AS A RANGE with the grade profile.]
+
+## 2. The question skeleton (pre-answered)
+${STATE.questions.map((q,i)=>`${i+1}. ${q.q}\n   → [answer + evidence ref] (${q.cat})`).join("\n")}
+
+## 3. Parameter registry
+${ps.map(p=>`- ${p.n}: default ${p.def} ${p.u} · range ${p.lo}–${p.hi} · grade ${p.g}\n  contested because: ${p.w}${STATE.research[p.n]?"\n  external corroboration: "+STATE.research[p.n].slice(0,160)+"…":""}`).join("\n")}
+
+## 4. Cost model
+[Equations + fixtures. Every output reproducible from §3 registry. WACC surfaced as a slider, not buried.]
+
+## 5. Supply chain & concentration risk
+${STATE.supply.map((s,i)=>`${i+1}. ${s.s} — ${s.d} · risk: ${s.r}`).join("\n")}
+
+## 6. Regulatory pathway
+[Gating approvals, precedent, timeline ranges — graded like every other claim.]
+
+## 7. Stakeholder views
+- Investor: base vs downside; grade profile; which D-grades convert to B and when.
+- Client: indicative price band; what firms it up; delivery-relevant uncertainties.
+- Engineering: full honest ranges; falsification criteria per claim.
+
+## 8. Open items & falsification criteria
+[Pre-registered: what evidence would move each C/D claim, and what would kill the thesis.]`;
+}
+function techSpecSkeleton(){
+ const ps=activeParams();
+ return `# TECH SPEC SKELETON — ${STATE.desc.slice(0,70)}…
+
+## 1. System definition
+[One paragraph. Diagram ref.]
+
+## 2. Performance parameters (graded)
+${ps.filter(p=>!/WACC|price|land|O&M|Depreciation|shock/i.test(p.n)).map(p=>`- ${p.n}: [SPEC] ${p.u} · grade [${p.g}] · verification method: [test/analysis/similarity]`).join("\n")}
+
+## 3. Interfaces
+[Power / data / mechanical / regulatory interfaces — each with owner.]
+
+## 4. Verification matrix
+| Spec | Method | Fixture/test | Grade now → target |
+|---|---|---|---|
+${ps.slice(0,5).map(p=>`| ${p.n} | [TBD] | [TBD] | ${p.g} → B |`).join("\n")}
+
+## 5. Supply chain per subsystem
+${STATE.supply.map(s=>`- ${s.s}: ${s.d} · ⚠ ${s.r}`).join("\n")}
+
+## 6. Known unknowns
+[Every D-grade item, with the cheapest experiment that would upgrade it.]`;
+}
+function dl(name,text){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/markdown'}));a.download=name;a.click();}
+</script>
+</body>
+</html>
