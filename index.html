@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CetaLabs — Deeptech Intelligence Substrate (MVP v1)</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --basil:#3B5A40; --passata:#C97956; --lemons:#D3C97E; --fresh:#5C8462;
+  --minty:#CBD9C8; --cream:#F3F0DE; --ink:#22301F;
+  --gA:#3B5A40; --gB:#5C8462; --gC:#C97956; --gD:#a8452f;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--ink);font-size:14px;line-height:1.5}
+h1,h2,h3{font-family:'DM Serif Display',serif;font-weight:400}
+.mono{font-family:'JetBrains Mono',monospace}
+header{padding:20px 28px 14px;border-bottom:2px solid var(--basil);display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+header h1{font-size:26px;color:var(--basil)}
+header .sub{font-size:12px;color:var(--fresh)}
+nav{display:flex;gap:0;border-bottom:1px solid var(--minty);background:#fff}
+nav button{font-family:'Inter';font-size:13px;font-weight:600;padding:12px 22px;border:none;background:none;cursor:pointer;color:var(--fresh);border-bottom:3px solid transparent}
+nav button.active{color:var(--basil);border-bottom-color:var(--passata)}
+main{display:grid;grid-template-columns:340px 1fr;min-height:calc(100vh - 110px)}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+.rail{background:#fff;border-right:1px solid var(--minty);padding:18px}
+.rail h3{font-size:16px;color:var(--basil);margin-bottom:4px}
+.rail .note{font-size:11.5px;color:var(--fresh);margin-bottom:14px}
+.param{margin-bottom:16px;padding-bottom:12px;border-bottom:1px dashed var(--minty)}
+.param label{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;font-weight:600;margin-bottom:5px}
+.param .val{font-family:'JetBrains Mono';font-size:12px;color:var(--passata);font-weight:600}
+input[type=range]{width:100%;accent-color:var(--basil)}
+select{width:100%;padding:6px;border:1px solid var(--minty);border-radius:4px;font-family:'Inter';font-size:12.5px;background:var(--cream)}
+.badge{display:inline-block;font-family:'JetBrains Mono';font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px;color:#fff;cursor:pointer;margin-left:6px}
+.badge.A{background:var(--gA)}.badge.B{background:var(--gB)}.badge.C{background:var(--gC)}.badge.D{background:var(--gD)}
+.canvas{padding:22px 28px;overflow:auto}
+.headline{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.stat{background:#fff;border:1px solid var(--minty);border-left:4px solid var(--passata);border-radius:6px;padding:12px 18px;min-width:170px}
+.stat .k{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--fresh)}
+.stat .v{font-family:'DM Serif Display';font-size:26px;color:var(--basil)}
+.stat .d{font-size:11px;color:var(--fresh)}
+.chartbox{background:#fff;border:1px solid var(--minty);border-radius:6px;padding:16px;margin-bottom:18px}
+.chartbox h3{font-size:15px;color:var(--basil);margin-bottom:8px}
+.chartbox canvas{max-height:300px}
+.fixtures{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.chip{font-family:'JetBrains Mono';font-size:11px;padding:4px 10px;border-radius:12px;border:1px solid var(--minty);background:#fff}
+.chip.pass{border-color:var(--fresh);color:var(--basil)}
+.chip.fail{border-color:var(--gD);color:var(--gD)}
+.finding{background:#fff;border:1px solid var(--lemons);border-left:4px solid var(--lemons);border-radius:6px;padding:10px 14px;font-size:12.5px;margin-bottom:18px}
+.finding b{color:var(--basil)}
+dialog{border:2px solid var(--basil);border-radius:8px;max-width:460px;padding:20px;font-size:13px;background:var(--cream)}
+dialog::backdrop{background:rgba(34,48,31,.45)}
+dialog h3{color:var(--basil);font-size:18px;margin-bottom:8px}
+dialog table{width:100%;font-size:12px;margin-top:8px;border-collapse:collapse}
+dialog td{padding:4px 6px;border-bottom:1px solid var(--minty);vertical-align:top}
+dialog td:first-child{font-weight:600;width:110px;color:var(--fresh)}
+dialog button{margin-top:14px;background:var(--basil);color:#fff;border:none;padding:7px 16px;border-radius:5px;cursor:pointer;font-family:'Inter';font-weight:600}
+.tag{font-size:10px;font-family:'JetBrains Mono';background:var(--minty);color:var(--basil);padding:1px 6px;border-radius:3px}
+.hidden{display:none}
+footer{padding:12px 28px;font-size:11px;color:var(--fresh);border-top:1px solid var(--minty)}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>Deeptech Intelligence Substrate</h1>
+  <div class="sub">CetaLabs · MVP v1 · every number traces to a graded claim — tap any <span class="badge C" style="cursor:default">C</span> badge</div></div>
+  <div class="mono" style="font-size:11px;color:var(--fresh)">claims: MCD v5 (EGY-PROJ-2501) + [UNVERIFIED] placeholders</div>
+</header>
+<nav>
+  <button class="active" data-tab="m1">Module 1 · SBSP</button>
+  <button data-tab="m2">Module 2 · Compute</button>
+  <button data-tab="x">Cross-Module Levers</button>
+</nav>
+
+<main>
+<!-- ============ RAIL ============ -->
+<div class="rail">
+  <!-- M1 rail -->
+  <div id="rail-m1">
+    <h3>SBSP Parameters</h3>
+    <div class="note">Aphelia MCD v5. Grades: A measured · B published · C internal projection · D speculative/tool-extrapolated.</div>
+    <div class="param">
+      <label>Design generation <span class="badge C" onclick="claim('gen')">C</span></label>
+      <select id="gen" onchange="renderAll()">
+        <option value="A">Gen A — 13m×13m LEO (§3)</option>
+        <option value="B" selected>Gen B — 20m×20m LEO (§4)</option>
+        <option value="C">Gen C — 140m×140m GEO (§5)</option>
+      </select>
+    </div>
+    <div class="param">
+      <label>Constellation size <span><span class="val" id="v-n"></span><span class="badge A" onclick="claim('n')">A</span></span></label>
+      <input type="range" id="n" min="0" max="5" step="1" value="4" oninput="renderAll()">
+    </div>
+    <div class="param">
+      <label>Lifespan (years) <span><span class="val" id="v-life"></span><span class="badge C" onclick="claim('life')">C</span></span></label>
+      <input type="range" id="life" min="10" max="25" step="1" value="20" oninput="renderAll()">
+    </div>
+    <div class="param">
+      <label>WACC / discount rate <span><span class="val" id="v-wacc"></span><span class="badge D" onclick="claim('wacc')">D</span></span></label>
+      <input type="range" id="wacc" min="0" max="15" step="0.5" value="0" oninput="renderAll()">
+      <div class="note" style="margin:4px 0 0">At 0% this reproduces the MCD's figures exactly (finding F-1).</div>
+    </div>
+    <div class="param" id="p-launch">
+      <label>Launch cost ($/kg, Gen C only) <span><span class="val" id="v-launch"></span><span class="badge C" onclick="claim('launch')">C</span></span></label>
+      <input type="range" id="launch" min="850" max="8000" step="50" value="850" oninput="renderAll()">
+    </div>
+    <div class="param" id="p-cf">
+      <label>Capacity factor (Gen C only) <span><span class="val" id="v-cf"></span><span class="badge C" onclick="claim('cf')">C</span></span></label>
+      <input type="range" id="cf" min="30" max="70" step="1" value="59" oninput="renderAll()">
+    </div>
+  </div>
+
+  <!-- M2 rail -->
+  <div id="rail-m2" class="hidden">
+    <h3>Compute Parameters</h3>
+    <div class="note">Module 2 proves the spine generalizes. All values <span class="tag">[UNVERIFIED]</span> pending Phase-0 sourcing — the schema, not the numbers, is the deliverable here.</div>
+    <div class="param"><label>GPU unit price ($k) <span><span class="val" id="v-gpu"></span><span class="badge D" onclick="claim('gpu')">D</span></span></label>
+      <input type="range" id="gpu" min="15" max="45" step="1" value="30" oninput="renderAll()"></div>
+    <div class="param"><label>Cluster size (GPUs) <span><span class="val" id="v-cluster"></span><span class="badge D" onclick="claim('cluster')">D</span></span></label>
+      <input type="range" id="cluster" min="1000" max="50000" step="1000" value="10000" oninput="renderAll()"></div>
+    <div class="param"><label>Export-control shock (× capex) <span><span class="val" id="v-shock"></span><span class="badge D" onclick="claim('shock')">D</span></span></label>
+      <input type="range" id="shock" min="1" max="2.5" step="0.05" value="1" oninput="renderAll()">
+      <div class="note" style="margin:4px 0 0">The Compute-Politik event-shock pattern, as a lever.</div></div>
+    <div class="param"><label>Electricity price ($/kWh) <span><span class="val" id="v-elec"></span><span class="badge C" onclick="claim('elec')">C</span></span></label>
+      <input type="range" id="elec" min="0.03" max="0.30" step="0.01" value="0.10" oninput="renderAll()"></div>
+    <div class="param"><label>PUE <span><span class="val" id="v-pue"></span><span class="badge C" onclick="claim('pue')">C</span></span></label>
+      <input type="range" id="pue" min="1.1" max="1.6" step="0.05" value="1.3" oninput="renderAll()"></div>
+    <div class="param"><label>Utilization (%) <span><span class="val" id="v-util"></span><span class="badge C" onclick="claim('util')">C</span></span></label>
+      <input type="range" id="util" min="40" max="95" step="1" value="70" oninput="renderAll()"></div>
+  </div>
+
+  <!-- X rail -->
+  <div id="rail-x" class="hidden">
+    <h3>Shared Levers</h3>
+    <div class="note">One parameter, two domains. This view is a <b>scenario instrument</b>, not a claim: it shows where the modules' outputs interact.</div>
+    <div class="param"><label>Electricity price ($/kWh) <span class="val" id="v-elec2"></span></label>
+      <input type="range" id="elec2" min="0.03" max="0.30" step="0.01" value="0.10" oninput="syncElec(this.value)"></div>
+    <div class="param"><label>Launch cost ($/kg) <span class="val" id="v-launch2"></span></label>
+      <input type="range" id="launch2" min="850" max="8000" step="50" value="850" oninput="syncLaunch(this.value)"></div>
+    <div class="note">SBSP output uses <b>Gen C</b> (the only generation with a launch-cost split) at current Module-1 settings for size, lifespan, WACC, CF.</div>
+  </div>
+</div>
+
+<!-- ============ CANVAS ============ -->
+<div class="canvas">
+  <!-- M1 -->
+  <div id="tab-m1">
+    <div class="headline">
+      <div class="stat"><div class="k">LCOE ($/kWh)</div><div class="v" id="lcoe">—</div><div class="d" id="lcoe-d"></div></div>
+      <div class="stat"><div class="k">Fleet deployed cost</div><div class="v" id="fleet">—</div><div class="d">manufacturing + launch</div></div>
+      <div class="stat"><div class="k">Lifespan energy</div><div class="v" id="energy">—</div><div class="d" id="energy-d"></div></div>
+    </div>
+    <div class="fixtures" id="fixtures"></div>
+    <div class="finding" id="f1box"><b>F-1 · Methodology surfaced:</b> the MCD's LCOE is undiscounted (cost ÷ energy). Drag WACC to see standard-methodology LCOE — the MCD figure is the 0% point on this curve, not a different answer.</div>
+    <div class="chartbox"><h3>LCOE vs constellation size — undiscounted (MCD) vs at current WACC</h3><canvas id="c1"></canvas></div>
+    <div class="chartbox"><h3>Sensitivity — % change in LCOE per parameter across its contest range</h3><canvas id="c2"></canvas></div>
+    <div class="finding"><b>F-2 · Generation flux:</b> switching design generation moves the 50-sat headline LCOE across <span class="mono" id="f2span"></span> — four headline LCOEs coexist in one document. The dropdown is the versioning argument.</div>
+  </div>
+
+  <!-- M2 -->
+  <div id="tab-m2" class="hidden">
+    <div class="headline">
+      <div class="stat"><div class="k">Effective $/GPU-hour</div><div class="v" id="gpuhr">—</div><div class="d">capex amortized + energy</div></div>
+      <div class="stat"><div class="k">Cluster capex</div><div class="v" id="capex">—</div><div class="d" id="capex-d"></div></div>
+      <div class="stat"><div class="k">Annual energy bill</div><div class="v" id="ebill">—</div><div class="d" id="ebill-d"></div></div>
+    </div>
+    <div class="finding"><b>Module contract demo:</b> same spine as SBSP — claims with grades, parameters with ranges, a pure-function model, reusable views. Numbers are placeholders <span class="tag">[UNVERIFIED]</span>; replacing them is a data task, not a rebuild. Map view (Unseen Empire pattern) binds here in v2.</div>
+    <div class="chartbox"><h3>$/GPU-hour vs electricity price — at 1.0× and current export-control shock</h3><canvas id="c3"></canvas></div>
+    <div class="chartbox"><h3>Cost structure — capex amortization vs energy share</h3><canvas id="c4"></canvas></div>
+  </div>
+
+  <!-- X -->
+  <div id="tab-x" class="hidden">
+    <div class="headline">
+      <div class="stat"><div class="k">SBSP LCOE (Gen C)</div><div class="v" id="x-lcoe">—</div><div class="d">at current M1 settings</div></div>
+      <div class="stat"><div class="k">Grid price</div><div class="v" id="x-grid">—</div><div class="d">shared lever</div></div>
+      <div class="stat"><div class="k">SBSP ÷ grid</div><div class="v" id="x-ratio">—</div><div class="d" id="x-verdict"></div></div>
+    </div>
+    <div class="finding"><b>v3 view (scenario, not claim):</b> the compute module's energy bill and the SBSP module's LCOE share one lever — electricity price. Launch cost feeds SBSP directly and space-compute feasibility in a later module. The tornado below spans <i>both</i> modules: which single disagreement moves which output most. That cross-domain cascade is the substrate's thesis in one chart.</div>
+    <div class="chartbox"><h3>Cross-module tornado — output swing across each parameter's contest range</h3><canvas id="c5"></canvas></div>
+    <div class="chartbox"><h3>Convergence — SBSP LCOE vs grid price as launch $/kg falls</h3><canvas id="c6"></canvas></div>
+  </div>
+</div>
+</main>
+<footer>CetaLabs · Irori design system · Fixtures T1–T4 from Aphelia MCD v5 · This instrument surfaces contested claims; it does not adjudicate them.</footer>
+
+<dialog id="dlg"><h3 id="dlg-t"></h3><table id="dlg-b"></table><button onclick="dlg.close()">Close</button></dialog>
+
+<script>
+/* ================= CLAIMS (Layer 1) ================= */
+const CLAIMS = {
+gen:{t:"Design generation",s:"MCD v5 §3 / §4 / §5",g:"C",st:"Three design generations coexist; V5 changelog designates §5 as current but §3–4 figures remain in-document.",r:"—",note:"Finding F-2/F-4. R to mark canonical generation in Phase 0."},
+n:{t:"Constellation size",s:"MCD §3.6.5, §4.2.4.1, §5.7.2",g:"A",st:"Fleet size is a choice variable; per-unit cost curve at each size is grade C.",r:"1–500 (Gen A) / 1–50 (B, C)",note:"Economies-of-scale learning rate is the underlying contested claim."},
+life:{t:"Operational lifespan",s:"MCD §3.5.4 (25yr), §4.2.4.1 (10–20yr)",g:"C",st:"MCD uses 25yr (Gen A) and 10/20yr (Gen B) across generations.",r:"10–25 yr",note:"Interpolation between MCD's 10yr and 20yr energy figures is tool-computed (grade D)."},
+wacc:{t:"Discount rate (WACC)",s:"Absent from MCD — tool input",g:"D",st:"All MCD LCOE figures are undiscounted (implicit WACC = 0%).",r:"0–15%",note:"Finding F-1. Standard LCOE discounts the energy stream; typical utility WACC 7–10%."},
+launch:{t:"Launch cost to LEO",s:"MCD §5.6.1 launch market table",g:"C",st:"Baseline $850/kg (Starship, projection). MCD's own table spans $850–$8,000/kg.",r:"$850–$8,000/kg",note:"Starship figure is not a contracted price. Falcon 9 at $7,000/kg is grade B."},
+cf:{t:"Capacity factor (Gen C)",s:"MCD §5.7.3.1",g:"C",st:"~59% combined capacity factor claimed for GEO design.",r:"[30–70% pending external sourcing]",note:"Core argument vs terrestrial solar (15–25%). External SBSP literature range to be added Phase 0."},
+gpu:{t:"GPU unit price",s:"[UNVERIFIED placeholder]",g:"D",st:"$30k default, H100-class accelerator.",r:"$15–45k",note:"Replace with sourced claim in Phase 0. Schema demo only."},
+cluster:{t:"Cluster size",s:"Scenario input",g:"D",st:"Choice variable.",r:"1k–50k GPUs",note:"—"},
+shock:{t:"Export-control shock",s:"Compute-Politik pattern",g:"D",st:"Multiplier on accelerator capex under supply restriction scenarios.",r:"1.0–2.5×",note:"Event-shock lever ported from cetalabs-forecasting.replit.app."},
+elec:{t:"Electricity price",s:"[UNVERIFIED placeholder]",g:"C",st:"$0.10/kWh default industrial rate.",r:"$0.03–0.30/kWh",note:"Shared lever with Module 1 — see Cross-Module view."},
+pue:{t:"PUE",s:"[UNVERIFIED placeholder]",g:"C",st:"1.3 default.",r:"1.1–1.6",note:"—"},
+util:{t:"Utilization",s:"Scenario input",g:"C",st:"70% default.",r:"40–95%",note:"—"}
+};
+const dlg=document.getElementById('dlg');
+function claim(k){const c=CLAIMS[k];document.getElementById('dlg-t').textContent=c.t;
+document.getElementById('dlg-b').innerHTML=`<tr><td>Statement</td><td>${c.st}</td></tr><tr><td>Source</td><td>${c.s}</td></tr><tr><td>Grade</td><td><span class="badge ${c.g}" style="cursor:default">${c.g}</span></td></tr><tr><td>Contest range</td><td>${c.r}</td></tr><tr><td>Note</td><td>${c.note}</td></tr>`;dlg.showModal();}
+
+/* ================= MODEL (Layer 3, pure functions) ================= */
+const GEN={
+A:{sizes:[1,5,10,25,50,100,500],cost:{1:27.5e6,5:69.5e6,10:106e6,25:205e6,50:345e6,100:630e6,500:3150e6},kwhPerSat:l=>4740756*(l/25),lifeNote:"MCD baseline 25yr; other lifespans are linear tool-extrapolation (D)"},
+B:{sizes:[1,5,10,25,50],cost:{1:55459855,5:121467600,10:209567200,25:470844000,50:891238000},kwhPerSat:l=>{const e10=4162174,e20=6601997;if(l<=10)return e10*(l/10);if(l>=20)return e20*(l/20)*1e0*(l<=20?1:1),e20+(l-20)/10*(e20-e10)* (l>20?1:0)||e20; return e10+(l-10)/10*(e20-e10);},lifeNote:"MCD gives 10yr & 20yr; between/beyond is interpolation (D)"},
+C:{sizes:[1,5,10,25,50],satCost:{1:27894256,5:21125036,10:18361672,25:15009460,50:12895000},massKg:14301,peakW:9.34e6,lifeNote:"No MCD LCOE stated for Gen C — all outputs tool-computed (D)"}
+};
+// fix GenB kwh fn (clean)
+GEN.B.kwhPerSat=l=>{const e10=4162174,e20=6601997;if(l<=10)return e10*(l/10);if(l<=20)return e10+(l-10)/10*(e20-e10);return e20*(l/20);};
+function nearestSize(g,idx){return GEN[g].sizes[Math.min(idx,GEN[g].sizes.length-1)];}
+function fleetCost(g,n,launchPerKg){ if(g==='C'){return n*(GEN.C.satCost[n]+GEN.C.massKg*launchPerKg);} return GEN[g].cost[n]; }
+function kwhPerSat(g,life,cf){ if(g==='C'){return GEN.C.peakW/1000*(cf/100)*8766*life;} return GEN[g].kwhPerSat(life); }
+function lcoe(g,n,life,waccPct,launchPerKg,cf){
+  const capex=fleetCost(g,n,launchPerKg), annual=kwhPerSat(g,life,cf)*n/life, r=waccPct/100;
+  let disc=0; for(let t=1;t<=life;t++) disc+=annual/Math.pow(1+r,t);
+  return capex/disc;
+}
+function gpuHr(gpuK,cluster,shock,elec,pue,utilPct){
+  const capex=gpuK*1000*cluster*shock*2.0;           // ×2.0 system overhead [UNVERIFIED, D]
+  const kW=cluster*0.7*pue;                          // 700W/GPU [UNVERIFIED, D]
+  const hrs=8766*(utilPct/100);
+  const annualEnergy=kW*8766*elec;                   // energy runs 24/7 regardless of util (simplification, D)
+  const perHr=(capex/4 + annualEnergy)/(cluster*hrs);// 4yr straight-line depreciation [D]
+  return {perHr,capex,annualEnergy};
+}
+
+/* ================= FIXTURES ================= */
+const FIX=[
+ {id:"T1",g:"A",n:1,life:25,exp:5.80},{id:"T2",g:"A",n:500,life:25,exp:1.33},
+ {id:"T3",g:"B",n:50,life:20,exp:2.70},{id:"T4",g:"C",n:50,life:25,exp:null,label:"T4 Gen-C deployed $25.05M/sat"}
+];
+function runFixtures(){
+ return FIX.map(f=>{
+  if(f.id==="T4"){const c=GEN.C.satCost[50]+GEN.C.massKg*850;const ok=Math.abs(c-25050850)<1;return {id:f.id,ok,txt:`${f.label} ${ok?'✓':'✗'}`};}
+  const v=lcoe(f.g,f.n,f.life,0,850,59);const ok=Math.abs(v-f.exp)/f.exp<0.02;
+  return {id:f.id,ok,txt:`${f.id} ${f.g}/${f.n}sat/${f.life}yr → $${v.toFixed(2)} vs MCD $${f.exp.toFixed(2)} ${ok?'✓':'✗'}`};
+ });
+}
+
+/* ================= VIEWS (Layer 4) ================= */
+let charts={};
+function mkChart(id,cfg){if(charts[id])charts[id].destroy();charts[id]=new Chart(document.getElementById(id),cfg);}
+const $=id=>document.getElementById(id);
+const fmtM=v=>v>=1e9?`$${(v/1e9).toFixed(2)}B`:`$${(v/1e6).toFixed(1)}M`;
+
+function renderAll(){
+ // read state
+ const g=$('gen').value, nIdx=+$('n').value, n=nearestSize(g,nIdx), life=+$('life').value,
+ wacc=+$('wacc').value, launch=+$('launch').value, cf=+$('cf').value;
+ $('v-n').textContent=n+' sats'; $('v-life').textContent=life+' yr'; $('v-wacc').textContent=wacc+'%';
+ $('v-launch').textContent='$'+launch+'/kg'; $('v-cf').textContent=cf+'%';
+ $('p-launch').style.opacity=g==='C'?1:.35; $('p-cf').style.opacity=g==='C'?1:.35;
+ $('n').max=GEN[g].sizes.length-1;
+
+ // M1 headline
+ const L=lcoe(g,n,life,wacc,launch,cf), L0=lcoe(g,n,life,0,launch,cf);
+ $('lcoe').textContent='$'+L.toFixed(2);
+ $('lcoe-d').textContent=wacc>0?`undiscounted: $${L0.toFixed(2)} (MCD basis)`:'undiscounted — matches MCD basis';
+ $('fleet').textContent=fmtM(fleetCost(g,n,launch));
+ $('energy').textContent=(kwhPerSat(g,life,cf)*n/1e6).toFixed(1)+' GWh';
+ $('energy-d').textContent=GEN[g].lifeNote;
+ $('fixtures').innerHTML=runFixtures().map(f=>`<span class="chip ${f.ok?'pass':'fail'}">${f.txt}</span>`).join('');
+ const l50=['A','B','C'].map(gg=>lcoe(gg,50,gg==='A'?25:(gg==='B'?20:25),0,850,59).toFixed(2));
+ $('f2span').textContent=`$${Math.min(...l50.map(Number)).toFixed(2)} – $${Math.max(...l50.map(Number)).toFixed(2)}/kWh (undiscounted, 50 sats)`;
+
+ // c1: LCOE vs size
+ const sizes=GEN[g].sizes;
+ mkChart('c1',{type:'line',data:{labels:sizes,datasets:[
+  {label:'Undiscounted (MCD basis)',data:sizes.map(s=>lcoe(g,s,life,0,launch,cf)),borderColor:'#3B5A40',backgroundColor:'#3B5A40',tension:.25},
+  {label:`At ${wacc}% WACC`,data:sizes.map(s=>lcoe(g,s,life,wacc,launch,cf)),borderColor:'#C97956',backgroundColor:'#C97956',borderDash:[6,4],tension:.25}]},
+  options:{plugins:{legend:{labels:{font:{family:'Inter',size:11}}}},scales:{y:{title:{display:true,text:'$/kWh'}},x:{title:{display:true,text:'constellation size'}}}}});
+
+ // c2: tornado M1
+ const base=L;
+ const sens=[];
+ sens.push({p:'WACC 0→10%',lo:lcoe(g,n,life,0,launch,cf),hi:lcoe(g,n,life,10,launch,cf)});
+ sens.push({p:'Lifespan 10→25yr',lo:lcoe(g,n,25,wacc,launch,cf),hi:lcoe(g,n,10,wacc,launch,cf)});
+ sens.push({p:`Fleet ${sizes[0]}→${sizes[sizes.length-1]}`,lo:lcoe(g,sizes[sizes.length-1],life,wacc,launch,cf),hi:lcoe(g,sizes[0],life,wacc,launch,cf)});
+ if(g==='C'){sens.push({p:'Launch $850→$8000/kg',lo:lcoe(g,n,life,wacc,850,cf),hi:lcoe(g,n,life,wacc,8000,cf)});
+             sens.push({p:'CF 70→30%',lo:lcoe(g,n,life,wacc,launch,70),hi:lcoe(g,n,life,wacc,launch,30)});}
+ sens.sort((a,b)=>(b.hi-b.lo)-(a.hi-a.lo));
+ mkChart('c2',{type:'bar',data:{labels:sens.map(s=>s.p),datasets:[{label:'LCOE swing ($/kWh) across contest range',data:sens.map(s=>s.hi-s.lo),backgroundColor:'#5C8462'}]},
+  options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{title:{display:true,text:'Δ $/kWh'}}}}});
+
+ // M2
+ const gpu=+$('gpu').value,cluster=+$('cluster').value,shock=+$('shock').value,elec=+$('elec').value,pue=+$('pue').value,util=+$('util').value;
+ $('v-gpu').textContent='$'+gpu+'k';$('v-cluster').textContent=cluster.toLocaleString();$('v-shock').textContent=shock.toFixed(2)+'×';
+ $('v-elec').textContent='$'+elec.toFixed(2);$('v-pue').textContent=pue.toFixed(2);$('v-util').textContent=util+'%';
+ const R=gpuHr(gpu,cluster,shock,elec,pue,util);
+ $('gpuhr').textContent='$'+R.perHr.toFixed(2);$('capex').textContent=fmtM(R.capex);
+ $('capex-d').textContent=shock>1?`incl. ${shock.toFixed(2)}× export shock`:'no export shock';
+ $('ebill').textContent=fmtM(R.annualEnergy);$('ebill-d').textContent=`at $${elec.toFixed(2)}/kWh, PUE ${pue.toFixed(2)}`;
+ const eRange=Array.from({length:10},(_,i)=>0.03+i*0.03);
+ mkChart('c3',{type:'line',data:{labels:eRange.map(e=>'$'+e.toFixed(2)),datasets:[
+  {label:'no shock (1.0×)',data:eRange.map(e=>gpuHr(gpu,cluster,1,e,pue,util).perHr),borderColor:'#3B5A40',tension:.25},
+  {label:`shock ${shock.toFixed(2)}×`,data:eRange.map(e=>gpuHr(gpu,cluster,shock,e,pue,util).perHr),borderColor:'#C97956',borderDash:[6,4],tension:.25}]},
+  options:{plugins:{legend:{labels:{font:{family:'Inter',size:11}}}},scales:{y:{title:{display:true,text:'$/GPU-hr'}},x:{title:{display:true,text:'electricity $/kWh'}}}}});
+ const capexHr=R.capex/4/(cluster*8766*(util/100)), enHr=R.perHr-capexHr;
+ mkChart('c4',{type:'bar',data:{labels:['$/GPU-hr'],datasets:[
+  {label:'capex amortization',data:[capexHr],backgroundColor:'#3B5A40'},
+  {label:'energy',data:[enHr],backgroundColor:'#D3C97E'}]},
+  options:{indexAxis:'y',scales:{x:{stacked:true},y:{stacked:true}},plugins:{legend:{labels:{font:{family:'Inter',size:11}}}}}});
+
+ // X view (Gen C for launch split)
+ const xl=lcoe('C',n>50?50:(GEN.C.sizes.includes(n)?n:50),life>25?25:life,wacc,launch,cf);
+ $('v-elec2').textContent='$'+elec.toFixed(2);$('v-launch2').textContent='$'+launch+'/kg';
+ $('x-lcoe').textContent='$'+xl.toFixed(2);$('x-grid').textContent='$'+elec.toFixed(2);
+ const ratio=xl/elec;$('x-ratio').textContent=ratio.toFixed(1)+'×';
+ $('x-verdict').textContent=ratio<=1?'at/below grid — scenario crossover':'above grid price';
+ // c5 cross tornado: swings in native units, normalized to % of base output
+ const xs=[
+  {p:'[M1] Launch $850→8000/kg → SBSP LCOE',v:(lcoe('C',50,life,wacc,8000,cf)-lcoe('C',50,life,wacc,850,cf))/xl*100},
+  {p:'[M1] WACC 0→10% → SBSP LCOE',v:(lcoe('C',50,life,10,launch,cf)-lcoe('C',50,life,0,launch,cf))/xl*100},
+  {p:'[M1] CF 70→30% → SBSP LCOE',v:(lcoe('C',50,life,wacc,launch,30)-lcoe('C',50,life,wacc,launch,70))/xl*100},
+  {p:'[M2] Elec $0.03→0.30 → $/GPU-hr',v:(gpuHr(gpu,cluster,shock,0.30,pue,util).perHr-gpuHr(gpu,cluster,shock,0.03,pue,util).perHr)/R.perHr*100},
+  {p:'[M2] Export shock 1→2.5× → $/GPU-hr',v:(gpuHr(gpu,cluster,2.5,elec,pue,util).perHr-gpuHr(gpu,cluster,1,elec,pue,util).perHr)/R.perHr*100}
+ ].sort((a,b)=>b.v-a.v);
+ mkChart('c5',{type:'bar',data:{labels:xs.map(s=>s.p),datasets:[{label:'% swing of module output',data:xs.map(s=>s.v),backgroundColor:xs.map(s=>s.p.startsWith('[M1]')?'#3B5A40':'#C97956')}]},
+  options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{title:{display:true,text:'% of current output'}}}}});
+ // c6 convergence
+ const lr=Array.from({length:12},(_,i)=>850+i*650);
+ mkChart('c6',{type:'line',data:{labels:lr.map(v=>'$'+v),datasets:[
+  {label:'SBSP LCOE (Gen C, current settings)',data:lr.map(v=>lcoe('C',50,life,wacc,v,cf)),borderColor:'#3B5A40',tension:.25},
+  {label:'grid price (shared lever)',data:lr.map(_=>elec),borderColor:'#C97956',borderDash:[6,4],pointRadius:0}]},
+  options:{plugins:{legend:{labels:{font:{family:'Inter',size:11}}}},scales:{y:{title:{display:true,text:'$/kWh'}},x:{title:{display:true,text:'launch cost $/kg'}}}}});
+}
+function syncElec(v){$('elec').value=v;renderAll();}
+function syncLaunch(v){$('launch').value=v;renderAll();}
+
+/* tabs */
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+ document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+ ['m1','m2','x'].forEach(t=>{$('tab-'+t).classList.toggle('hidden',t!==b.dataset.tab);$('rail-'+t).classList.toggle('hidden',t!==b.dataset.tab);});
+ renderAll();
+});
+renderAll();
+</script>
+</body>
+</html>
