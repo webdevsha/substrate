@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Substrate</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--g0:#F5F5F3;--g1:#EAEAE7;--g2:#D4D4D0;--g3:#AFAFAB;--g4:#6B6B68;--ink:#3A3A38;--deep:#1A1A18;--sig:#4E7A51;--siglo:#D6E6D7;--sighi:#2C5A2F;--warn:#9B5B1A;--warnlo:#F5E6D5;--err:#8B2A2A}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:var(--g0);color:var(--ink);font-size:13px;line-height:1.5;display:flex;flex-direction:column}
+#chrome{flex-shrink:0;background:var(--g1);border-bottom:1px solid var(--g2);display:flex;align-items:stretch;height:48px;padding:0 20px;gap:0}
+#logo{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.02em;color:var(--deep);display:flex;align-items:center;gap:8px;padding-right:20px;border-right:1px solid var(--g2);white-space:nowrap}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--sig)}
+#tabs{display:flex;flex:1;overflow-x:auto}
+.tab{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:0 14px;border:none;background:none;color:var(--g3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;letter-spacing:.03em}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--deep);border-bottom-color:var(--sig)}
+.tab.locked{opacity:.3;cursor:default}
+.tab.done .tn{background:var(--sig);color:#fff}
+.tn{font-family:'JetBrains Mono';font-size:9px;font-weight:600;background:var(--g2);color:var(--g4);padding:1px 5px;border-radius:2px;margin-right:5px}
+#sysinfo{display:flex;align-items:center;padding:0 20px;margin-left:auto;font-family:'JetBrains Mono';font-size:10px;color:var(--g3);border-left:1px solid var(--g2)}
+#shell{flex:1;display:flex;overflow:hidden}
+#rail{width:260px;flex-shrink:0;border-right:1px solid var(--g2);background:var(--g1);display:flex;flex-direction:column;overflow:hidden}
+#rhead{padding:12px 16px;border-bottom:1px solid var(--g2);font-family:'JetBrains Mono';font-size:9.5px;color:var(--g3);letter-spacing:.08em}
+#rbody{flex:1;overflow-y:auto}
+.rp{padding:10px 14px;border-bottom:1px solid #E8E8E5;cursor:default;position:relative}
+.rp.on{border-left:2px solid var(--sig);padding-left:12px;background:var(--g0)}
+.rp-name{font-weight:500;font-size:12px;color:var(--deep);margin-bottom:2px;padding-right:28px}
+.rp-coord{font-family:'JetBrains Mono';font-size:9.5px;color:var(--g3)}
+.rp-bar{margin-top:5px;height:2px;background:var(--g2);border-radius:1px;position:relative}
+.rp-fill{position:absolute;top:0;height:2px;border-radius:1px;background:var(--sig)}
+.rp-val{font-family:'JetBrains Mono';font-size:10px;color:var(--sighi);font-weight:600;margin-top:3px}
+.rp-g{position:absolute;top:10px;right:10px;font-family:'JetBrains Mono';font-size:9px;font-weight:600;padding:1px 5px;border-radius:2px}
+.gA{background:#1A1A18;color:#fff}.gB{background:#4E7A51;color:#fff}.gC{background:#9B5B1A;color:#fff}.gD{background:#8B2A2A;color:#fff}
+.pane{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.pinner{flex:1;overflow-y:auto;padding:24px 28px 40px}
+h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.03em;color:var(--deep);margin-bottom:8px}
+h2{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:17px;color:var(--deep);letter-spacing:-.02em;margin-bottom:4px}
+h3{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13.5px;color:var(--deep);margin-bottom:6px}
+.eye{font-family:'JetBrains Mono';font-size:9.5px;letter-spacing:.1em;color:var(--g3);text-transform:uppercase;margin-bottom:10px}
+.note{font-size:12.5px;color:var(--g4);margin-bottom:16px;line-height:1.6;max-width:680px}
+.field{margin-bottom:16px}
+.field label{display:block;font-family:'JetBrains Mono';font-size:9.5px;letter-spacing:.08em;color:var(--g3);text-transform:uppercase;margin-bottom:6px}
+textarea,input[type=text]{width:100%;padding:9px 11px;border:1px solid var(--g2);border-radius:4px;font-family:'Inter';font-size:13px;background:#fff;color:var(--deep);resize:vertical}
+textarea{min-height:80px}
+textarea:focus,input:focus{outline:none;border-color:var(--sig)}
+.stkrow{display:flex;gap:8px;flex-wrap:wrap}
+.stk{display:flex;align-items:center;gap:7px;font-size:12.5px;background:#fff;border:1px solid var(--g2);border-radius:4px;padding:7px 12px;cursor:pointer}
+.stk input{accent-color:var(--sig)}
+.presets{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+button.ghost{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.04em;background:#fff;border:1px solid var(--g2);border-radius:4px;padding:6px 13px;color:var(--ink);cursor:pointer}
+button.ghost:hover{border-color:var(--sig);color:var(--sighi)}
+button.primary{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;background:var(--deep);color:#fff;border:none;border-radius:4px;padding:9px 20px;cursor:pointer}
+button.primary:hover{background:var(--sighi)}
+button.primary:disabled{background:var(--g2);color:var(--g3);cursor:wait}
+button.back{font-family:'JetBrains Mono';font-size:10px;background:none;border:1px solid var(--g2);border-radius:4px;padding:8px 14px;color:var(--g4);cursor:pointer}
+button.back:hover{border-color:var(--ink);color:var(--ink)}
+.btnrow{display:flex;gap:10px;align-items:center;margin-top:18px}
+.hero2{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start;margin-bottom:20px}
+.coordbox{font-family:'JetBrains Mono';font-size:10.5px;color:var(--g3);border:1px solid var(--g2);border-radius:4px;padding:14px 16px;background:#fff;line-height:2.2}
+.cl{display:flex;justify-content:space-between;gap:12px}
+.cv{color:var(--ink);font-weight:500}
+.qblock{margin-bottom:14px;padding:14px;background:#fff;border:1px solid var(--g2);border-radius:4px}
+.qcat{font-family:'JetBrains Mono';font-size:9.5px;letter-spacing:.08em;color:var(--g3);text-transform:uppercase;margin-bottom:5px}
+.qq{font-weight:500;font-size:13px;color:var(--deep);margin-bottom:3px}
+.qwhy{font-size:11.5px;color:var(--g4);margin-bottom:9px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:11.5px;padding:5px 12px;border-radius:100px;border:1px solid var(--g2);background:var(--g0);cursor:pointer;user-select:none}
+.chip:hover{border-color:var(--sig)}
+.chip.on{border-color:var(--sig);background:var(--siglo);color:var(--sighi);font-weight:500}
+.chip.add{color:var(--g3);border-style:dashed}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:10px}
+.pcard{background:#fff;border:1px solid var(--g2);border-radius:4px;padding:13px;cursor:pointer;position:relative;transition:border-color .15s}
+.pcard:hover{border-color:var(--g3)}
+.pcard.on{border-color:var(--sig);box-shadow:0 0 0 2px var(--siglo)}
+.pc-name{font-weight:500;font-size:12.5px;color:var(--deep);padding-right:34px;margin-bottom:2px}
+.pc-coord{font-family:'JetBrains Mono';font-size:9.5px;color:var(--g3);margin-bottom:6px}
+.pc-why{font-size:11.5px;color:var(--g4);margin-bottom:7px;line-height:1.5}
+.pc-bar{height:2px;background:var(--g2);border-radius:1px;margin-bottom:5px;position:relative}
+.pc-fill{position:absolute;height:2px;border-radius:1px;background:var(--sig)}
+.pc-edit{display:flex;gap:6px;align-items:center;margin-top:3px}
+.pc-edit input{width:72px;padding:3px 7px;font-family:'JetBrains Mono';font-size:10.5px;border:1px solid var(--g2);border-radius:3px;background:var(--g0)}
+.gbadge{position:absolute;top:11px;right:11px;font-family:'JetBrains Mono';font-size:9px;font-weight:600;padding:2px 6px;border-radius:2px}
+.rsrc{background:#fff;border:1px solid var(--g2);border-left:3px solid var(--g2);border-radius:4px;padding:11px 14px;margin-bottom:8px}
+.rsrc.tightened{border-left-color:var(--sig)}
+.rsrc.widened{border-left-color:var(--warn)}
+.rparam{font-family:'JetBrains Mono';font-size:9.5px;color:var(--g3);margin-bottom:4px}
+.statrow{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.statbox{background:#fff;border:1px solid var(--g2);border-radius:4px;padding:12px 16px;flex:1;min-width:150px}
+.sk{font-family:'JetBrains Mono';font-size:9.5px;letter-spacing:.07em;color:var(--g3);text-transform:uppercase;margin-bottom:4px}
+.sv{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--deep);line-height:1}
+.sd{font-family:'JetBrains Mono';font-size:9.5px;color:var(--g3);margin-top:3px}
+.vtabs{display:flex;gap:6px;margin-bottom:14px}
+.vtabs button{font-family:'JetBrains Mono';font-size:10px;padding:5px 13px;border-radius:100px;border:1px solid var(--g2);background:var(--g0);color:var(--g4);cursor:pointer}
+.vtabs button.on{background:var(--deep);color:#fff;border-color:var(--deep)}
+.cbox{background:#fff;border:1px solid var(--g2);border-radius:4px;padding:14px;margin-bottom:12px}
+.cbox h3{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.04em;color:var(--g4);margin-bottom:10px;font-weight:500}
+.cbox canvas{max-height:240px}
+pre.skel{font-family:'JetBrains Mono';font-size:10.5px;white-space:pre-wrap;background:var(--g0);border:1px solid var(--g2);border-radius:4px;padding:14px;max-height:360px;overflow:auto;color:var(--ink);line-height:1.7}
+.outgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.finding{background:var(--g1);border:1px solid var(--g2);border-left:3px solid var(--warn);border-radius:4px;padding:10px 14px;font-size:12px;margin-bottom:14px}
+.finding b{color:var(--warn)}
+.hidden{display:none!important}
+.spin{display:inline-block;width:11px;height:11px;border:1.5px solid var(--g2);border-top-color:var(--sig);border-radius:50%;animation:sp .75s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.err{font-family:'JetBrains Mono';font-size:11px;color:var(--err);margin-top:8px}
+hr.rule{border:none;border-top:1px solid var(--g2);margin:18px 0}
+@media(max-width:800px){.hero2,.outgrid{grid-template-columns:1fr}#rail{display:none}}
+</style>
+</head>
+<body>
+<div id="chrome">
+  <div id="logo"><div class="dot"></div>SUBSTRATE</div>
+  <div id="tabs">
+    <button class="tab active" data-s="0"><span class="tn">01</span>DESCRIBE</button>
+    <button class="tab locked" data-s="1"><span class="tn">02</span>SKELETON</button>
+    <button class="tab locked" data-s="2"><span class="tn">03</span>PARAMETERS</button>
+    <button class="tab locked" data-s="3"><span class="tn">04</span>RESEARCH</button>
+    <button class="tab locked" data-s="4"><span class="tn">05</span>SUPPLY CHAIN</button>
+    <button class="tab locked" data-s="5"><span class="tn">06</span>DATA ROOM</button>
+  </div>
+  <div id="sysinfo">STAGE 01 / 06</div>
+</div>
+<div id="shell">
+  <div id="rail" class="hidden">
+    <div id="rhead">PARAMETER REGISTRY</div>
+    <div id="rbody"></div>
+  </div>
+  <div class="pane">
+  <div class="pinner" id="pinner">
+
+    <!-- S0 DESCRIBE -->
+    <div id="s0">
+      <div class="eye">SUBSTRATE · DEEPTECH INTELLIGENCE PLATFORM</div>
+      <h1>What are you building?</h1>
+      <p class="note">Describe the technology in plain language. Substrate decomposes it into graded claims, contested parameters, and supply chain uncertainties — then bridges those uncertainties for engineering, investor, and client simultaneously.</p>
+      <div class="hero2">
+        <div>
+          <div class="field">
+            <label>Technology description</label>
+            <textarea id="techDesc" rows="5" placeholder="e.g. A constellation of space-based solar power satellites beaming energy to rectenna ground stations in Malaysia, selling baseload clean power to utilities…"></textarea>
+          </div>
+          <div class="presets">
+            <button class="ghost" onclick="loadP('sbsp')">preset: SBSP (Aphelia)</button>
+            <button class="ghost" onclick="loadP('compute')">preset: sovereign compute</button>
+          </div>
+          <div class="field" style="margin-top:16px">
+            <label>Who needs certainty from this?</label>
+            <div class="stkrow">
+              <label class="stk"><input type="checkbox" class="ski" value="investor" checked> Investor (DD-grade ranges)</label>
+              <label class="stk"><input type="checkbox" class="ski" value="client" checked> Client / procurer</label>
+              <label class="stk"><input type="checkbox" class="ski" value="engineering" checked> Engineering team</label>
+            </div>
+          </div>
+          <div class="btnrow">
+            <button class="primary" id="b0" onclick="go1()">Generate question skeleton →</button>
+            <span class="err" id="e0"></span>
+          </div>
+        </div>
+        <div class="coordbox" id="cbox">
+          <div class="cl"><span>TECH DOMAIN</span><span class="cv" id="cd1">—</span></div>
+          <div class="cl"><span>UNCERTAINTY CLASS</span><span class="cv" id="cd2">—</span></div>
+          <div class="cl"><span>AUDIENCES</span><span class="cv" id="cd3">—</span></div>
+          <div class="cl"><span>PARAMETERS (est.)</span><span class="cv" id="cd4">—</span></div>
+          <div class="cl"><span>SUPPLY STAGES</span><span class="cv" id="cd5">—</span></div>
+          <div class="cl"><span>INSTRUMENT MODE</span><span class="cv">MULTI-PRONG</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S1 SKELETON -->
+    <div id="s1" class="hidden">
+      <div class="eye">STAGE 02 — DUE-DILIGENCE SKELETON</div>
+      <h2>Question skeleton</h2>
+      <p class="note">These are the questions every audience will ask. Click the answers that apply — they shape which parameters matter most.</p>
+      <div id="qlist"></div>
+      <div class="btnrow">
+        <button class="back" onclick="goBack(0)">← back</button>
+        <button class="primary" id="b1" onclick="go2()">Extract parameters →</button>
+      </div>
+    </div>
+
+    <!-- S2 PARAMETERS -->
+    <div id="s2" class="hidden">
+      <div class="eye">STAGE 03 — PARAMETER REGISTRY</div>
+      <h2>Parameters &amp; uncertainty grades</h2>
+      <p class="note">Click to include. Edit contest ranges — they are commitments to honesty. <b>D-grade items dominate every cost tornado until sourced.</b></p>
+      <div class="pgrid" id="pgrid"></div>
+      <div class="btnrow" style="margin-top:14px">
+        <button class="back" onclick="goBack(1)">← back</button>
+        <button class="primary" onclick="go3()">Continue → live research</button>
+      </div>
+    </div>
+
+    <!-- S3 RESEARCH -->
+    <div id="s3" class="hidden">
+      <div class="eye">STAGE 04 — LIVE RESEARCH CORROBORATION</div>
+      <h2>External corroboration</h2>
+      <p class="note">Claude with web search corroborates each parameter: independent estimates, named sources, and whether they tighten or widen the contest range.</p>
+      <div class="btnrow" style="margin-bottom:14px">
+        <button class="primary" id="b3" onclick="doRes()">Pull corroboration</button>
+        <button class="ghost" onclick="go4()">Skip →</button>
+        <button class="back" onclick="goBack(2)">← back</button>
+      </div>
+      <div id="rout"></div>
+    </div>
+
+    <!-- S4 SUPPLY CHAIN -->
+    <div id="s4" class="hidden">
+      <div class="eye">STAGE 05 — SUPPLY CHAIN MAP</div>
+      <h2>Where cost uncertainty concentrates</h2>
+      <p class="note">Each node is a supply stage. Risk marks the handoff seams — where provenance gets lost.</p>
+      <canvas id="sccanvas" style="width:100%;height:340px;background:#fff;border:1px solid var(--g2);border-radius:4px;display:block"></canvas>
+      <div class="btnrow" style="margin-top:14px">
+        <button class="back" onclick="goBack(3)">← back</button>
+        <button class="primary" onclick="go5()">Generate data room &amp; visualization →</button>
+      </div>
+    </div>
+
+    <!-- S5 DATA ROOM -->
+    <div id="s5" class="hidden">
+      <div class="eye">STAGE 06 — DATA ROOM &amp; COST VISUALIZATION</div>
+      <h2>Multi-audience output</h2>
+      <p class="note">One model, three renderings. Same graded parameters — different guarantees per audience.</p>
+      <div class="vtabs">
+        <button class="on" onclick="setV('engineering',this)">Engineering</button>
+        <button onclick="setV('investor',this)">Investor</button>
+        <button onclick="setV('client',this)">Client / Procurer</button>
+      </div>
+      <div class="statrow" id="vstats"></div>
+      <div class="finding" id="vfind"></div>
+      <div class="cbox"><h3>COST INDEX — PER-PARAMETER SWEEP (all else at default)</h3><canvas id="cMain"></canvas></div>
+      <div class="cbox"><h3>UNCERTAINTY TORNADO — % SWING ACROSS CONTEST RANGE (D=red · C=amber · A/B=green)</h3><canvas id="cTor"></canvas></div>
+      <hr class="rule">
+      <div class="outgrid">
+        <div><h3>Data room skeleton</h3><pre class="skel" id="droom"></pre><button class="ghost" style="margin-top:8px" onclick="dl('data_room.md',$('droom').textContent)">↓ download .md</button></div>
+        <div><h3>Tech spec skeleton</h3><pre class="skel" id="tspec"></pre><button class="ghost" style="margin-top:8px" onclick="dl('tech_spec.md',$('tspec').textContent)">↓ download .md</button></div>
+      </div>
+      <div class="btnrow" style="margin-top:16px"><button class="back" onclick="goBack(4)">← back</button></div>
+    </div>
+
+  </div>
+  </div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+let ST={stage:0,desc:'',stk:[],questions:[],params:[],supply:[],research:{},view:'engineering',preset:null};
+const PR={
+sbsp:{desc:'A constellation of space-based solar power (SBSP) satellites beaming microwave energy to rectenna ground stations, selling firm baseload clean power to utilities and industrial clients in Malaysia (IRDA, TNB).',
+questions:[
+{q:'What does one deployed unit cost, and how does per-unit cost fall with volume?',why:'Investors price the learning curve; clients price the offtake.',cat:'UNIT ECONOMICS',opts:['Single-unit BOM cost known','Cost curve from supplier quotes','Learning rate from analogues']},
+{q:'What is the end-to-end efficiency chain, and which link is least proven?',why:'Each efficiency factor is a separately contestable claim.',cat:'PHYSICS / PERFORMANCE',opts:['All factors lab-measured','Some from literature only','Chain multiplied from component specs']},
+{q:'What fraction of cost rides on one launch provider?',why:'Supply chain concentration is where cost uncertainty explodes.',cat:'SUPPLY CHAIN',opts:['Multi-sourced','Single-sourced with alternatives priced','Single-sourced, no alternative']},
+{q:'Which regulatory approvals gate revenue, and what is their timeline uncertainty?',why:'Spectrum, safety zones, grid interconnection — each a schedule claim.',cat:'REGULATORY',opts:['Precedent exists','First-of-kind in jurisdiction','Unclear regulatory authority']},
+{q:'What price does TNB / IRDA benchmark you against, and on which metric?',why:"Client's yardstick decides which of your numbers matters most.",cat:'MARKET',opts:['LCOE vs grid tariff','Capex/W vs alternatives','PPA price vs incumbent']}
+],
+params:[
+{n:'Launch cost to orbit',u:'$/kg',lo:850,hi:8000,def:850,g:'C',w:'Provider projections vs contracted prices diverge ~10x. Starship $850/kg is uncontracted.',on:true},
+{n:'Satellite unit cost at volume',u:'$M/sat',lo:12.9,hi:27.9,def:12.9,g:'C',w:'Learning-curve claim; floor assumes 50-unit fleet.',on:true},
+{n:'Constellation size',u:'sats',lo:1,hi:50,def:50,g:'A',w:'Choice variable — amortizes NRE.',on:true},
+{n:'Capacity factor',u:'%',lo:30,hi:70,def:59,g:'C',w:'Core argument vs terrestrial solar (15-25%). Needs external corroboration.',on:true},
+{n:'Operational lifespan',u:'yr',lo:10,hi:25,def:25,g:'C',w:'Internal doc uses 10, 20, and 25yr across design generations.',on:true},
+{n:'WACC / discount rate',u:'%',lo:0,hi:15,def:8,g:'D',w:'Absent from internal docs. Investors apply 7-10% regardless.',on:true},
+{n:'Rectenna land cost',u:'$M/site',lo:1,hi:15,def:4,g:'D',w:'IRDA-zone vs urban-adjacent — drives client-side price anchor.',on:true},
+{n:'O&M annual cost',u:'% capex/yr',lo:1,hi:5,def:2,g:'D',w:'No operating history exists for the class.',on:false}
+],
+supply:[
+{s:'GaN MMICs & tiles',d:'TW/KR/MY OSAT fabs',r:'Export-control exposure; single-region concentration'},
+{s:'Thin-film solar cells',d:'Roll-to-roll (planned in-house MY)',r:'In-housing timeline is itself a grade-C claim'},
+{s:'Satellite bus & structure',d:'CFRP/Mg integration',r:'Unprecedented scale for cantilevered structures'},
+{s:'Launch vehicle',d:'Global launch market',r:'THE seam: $850-8,000/kg spans providers'},
+{s:'Ground rectenna & EPC',d:'Local contractor + land (IRDA/state)',r:'Land price + grid interconnect approval uncertainty'},
+{s:'Offtake / PPA',d:'Utility or industrial buyer',r:'Client benchmarks against grid + solar+BESS'}
+]},
+compute:{desc:'A sovereign AI compute cluster for regional model training and inference, positioning limited national resources — power, capital, talent — at the highest-leverage points of the compute supply chain.',
+questions:[
+{q:'What is the effective $/GPU-hour, and how exposed is it to accelerator price shocks?',why:'Export controls act as capex multipliers on the core unit-economics metric.',cat:'UNIT ECONOMICS',opts:['Contracted pricing','Spot pricing with shock scenarios','Aspirational pricing']},
+{q:'Where does power come from and at what price certainty?',why:'Electricity is the recurring cost floor and a shared lever with any co-located energy asset.',cat:'PHYSICS / INFRASTRUCTURE',opts:['PPA signed','Grid tariff assumed','Generation co-located (planned)']},
+{q:'Which supply chain stages can be executed domestically?',why:'Sovereignty lens: talent-gated vs capital-gated vs import-gated.',cat:'SUPPLY CHAIN',opts:['DC assembly & ops','Cooling/power infra','Orchestration & software layer']},
+{q:'What compute governance regimes constrain acquisition or operation?',why:'Export controls, data residency, reporting thresholds — each a schedule risk.',cat:'REGULATORY',opts:['Below control thresholds','Threshold-adjacent','Restricted-list exposure']},
+{q:'Who is the anchor customer and what do they benchmark against?',why:'Hyperscaler cloud prices set the client yardstick.',cat:'MARKET',opts:['Government / sovereign workloads','Regional enterprises','Research institutions']}
+],
+params:[
+{n:'Accelerator unit price',u:'$k',lo:15,hi:45,def:30,g:'D',w:'[UNVERIFIED] Volatile; allocation-constrained.',on:true},
+{n:'Export-control shock',u:'x capex',lo:1,hi:2.5,def:1.2,g:'D',w:'Event-shock multiplier; scenario not forecast.',on:true},
+{n:'Cluster size',u:'GPUs',lo:1000,hi:50000,def:10000,g:'A',w:'Choice variable.',on:true},
+{n:'Electricity price',u:'$/kWh',lo:0.03,hi:0.30,def:0.10,g:'C',w:'Shared lever with any co-located energy asset.',on:true},
+{n:'PUE',u:'ratio',lo:1.1,hi:1.6,def:1.3,g:'C',w:'Tropical siting incurs a cooling penalty vs temperate benchmarks.',on:true},
+{n:'Utilization',u:'%',lo:40,hi:95,def:70,g:'C',w:'Demand-side uncertainty; honest number rarely shown in pitches.',on:true},
+{n:'Depreciation horizon',u:'yr',lo:3,hi:6,def:4,g:'C',w:'GPU obsolescence pace.',on:false}
+],
+supply:[
+{s:'Accelerators (fab > pkg > OEM)',d:'TW/KR fabs, US OEM',r:'Export-control seam; allocation queues'},
+{s:'Power & cooling',d:'Utility PPA / on-site gen',r:'Tariff certainty; tropical PUE penalty'},
+{s:'DC build / retrofit',d:'Local EPC',r:'Playable domestically — capex not import-gated'},
+{s:'Network & interconnect',d:'Optical + carriers',r:'Secondary control exposure'},
+{s:'Orchestration & ops',d:'Software layer + local talent',r:'Talent-gated not capital-gated — high leverage'},
+{s:'Demand / workloads',d:'Sovereign + enterprise clients',r:'Utilization risk lives here'}
+]}
+};
+function loadP(k){ST.preset=k;$('techDesc').value=PR[k].desc;upCoord();}
+function upCoord(){
+ const d=$('techDesc').value,k=ST.preset&&PR[ST.preset]&&PR[ST.preset].desc===d?ST.preset:null;
+ $('cd1').textContent=k?({sbsp:'ENERGY / SPACE',compute:'AI / COMPUTE'}[k]):'—';
+ $('cd2').textContent=k?'HIGH — multiple C/D claims':'—';
+ $('cd3').textContent=[...$('pinner').querySelectorAll('.ski:checked')].length+' selected';
+ $('cd4').textContent=k?PR[k].params.length:'~7-9';
+ $('cd5').textContent=k?PR[k].supply.length:'~5-7';
+}
+$('techDesc').addEventListener('input',upCoord);
+document.querySelectorAll('.ski').forEach(x=>x.addEventListener('change',upCoord));
+upCoord();
+const SID=['s0','s1','s2','s3','s4','s5'];
+function show(n){
+ SID.forEach((id,i)=>$(id).classList.toggle('hidden',i!==n));
+ document.querySelectorAll('.tab').forEach((t,i)=>{t.className='tab'+(i<n?' done':(i===n?' active':' locked'));});
+ $('sysinfo').textContent='STAGE 0'+(n+1)+' / 06';
+ $('rail').classList.toggle('hidden',n<2);
+ ST.stage=n;$('pinner').scrollTop=0;
+}
+function goBack(n){show(n);}
+async function askC(p,s=false){
+ const b={model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:p}]};
+ if(s)b.tools=[{type:'web_search_20250305',name:'web_search'}];
+ const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});
+ const d=await r.json();if(!d.content)throw new Error('No response');
+ return d.content.filter(x=>x.type==='text').map(x=>x.text).join('\n');
+}
+function pJ(t){return JSON.parse(t.replace(/```json|```/g,'').trim());}
+async function go1(){
+ ST.desc=$('techDesc').value.trim();ST.stk=[...$('pinner').querySelectorAll('.ski:checked')].map(x=>x.value);
+ if(!ST.desc){$('e0').textContent='Describe the technology first.';return;}
+ $('e0').textContent='';
+ if(ST.preset&&PR[ST.preset]&&PR[ST.preset].desc===ST.desc){ST.questions=PR[ST.preset].questions;}
+ else{
+  $('b0').disabled=true;$('b0').innerHTML='<span class="spin"></span>Generating…';
+  try{const t=await askC('Technology: "'+ST.desc+'"\nGenerate 5 due-diligence questions covering: unit economics, physics/performance, supply chain, regulatory, market. Each must expose a cost-uncertainty seam. Respond ONLY as JSON: [{"q":"","why":"","cat":"CATEGORY","opts":["a","b","c"]}]');ST.questions=pJ(t);}
+  catch(e){$('e0').textContent='API unavailable — load a preset to continue. ('+e.message+')';$('b0').disabled=false;$('b0').textContent='Generate question skeleton →';return;}
+  $('b0').disabled=false;$('b0').textContent='Generate question skeleton →';
+ }
+ $('qlist').innerHTML=ST.questions.map((x,i)=>'<div class="qblock"><div class="qcat">'+x.cat+'</div><div class="qq">'+x.q+'</div><div class="qwhy">'+x.why+'</div><div class="chips">'+x.opts.map(o=>'<span class="chip" onclick="this.classList.toggle(\'on\')">'+o+'</span>').join('')+'<span class="chip add" onclick="var v=prompt(\'Your answer:\');if(v)this.insertAdjacentHTML(\'beforebegin\',\'<span class=\\\'chip on\\\'>\'+v+\'</span>\')">+ add</span></div></div>').join('');
+ show(1);
+}
+async function go2(){
+ const ans=[...document.querySelectorAll('#qlist .chip.on')].map(c=>c.textContent);
+ if(ST.preset&&PR[ST.preset]){ST.params=JSON.parse(JSON.stringify(PR[ST.preset].params));}
+ else{
+  $('b1').disabled=true;$('b1').innerHTML='<span class="spin"></span>Extracting…';
+  try{const t=await askC('Technology: "'+ST.desc+'". DD answers: '+JSON.stringify(ans)+'. Extract 7-9 cost-model parameters. For each: name, unit, low, high, default (numbers), grade (A/B/C/D), one-line why contested, on:true. Respond ONLY as JSON: [{"n":"","u":"","lo":0,"hi":0,"def":0,"g":"C","w":"","on":true}]');ST.params=pJ(t);}
+  catch(e){alert('API unavailable. '+e.message);ST.params=PR.compute.params;}
+  $('b1').disabled=false;$('b1').textContent='Extract parameters →';
+ }
+ renderP();show(2);renderRail();
+}
+function aP(){return ST.params.filter(p=>p.on);}
+function renderP(){
+ $('pgrid').innerHTML=ST.params.map((p,i)=>{
+  const pct=((p.def-p.lo)/Math.max(p.hi-p.lo,1e-9)*100).toFixed(0);
+  return '<div class="pcard '+(p.on?'on':'')+'" onclick="togP('+i+',event)"><span class="gbadge g'+p.g+'">'+p.g+'</span><div class="pc-name">'+p.n+'</div><div class="pc-coord">x:'+p.lo+' '+p.u+' \u2194 y:'+p.hi+' '+p.u+'</div><div class="pc-why">'+p.w+'</div><div class="pc-bar"><div class="pc-fill" style="left:0;width:'+pct+'%"></div></div><div class="pc-edit" onclick="event.stopPropagation()"><input type="text" value="'+p.lo+'" onchange="ST.params['+i+'].lo=+this.value;renderRail()"> \u2013 <input type="text" value="'+p.hi+'" onchange="ST.params['+i+'].hi=+this.value;renderRail()"><span style="font-family:\'JetBrains Mono\';font-size:9.5px;color:var(--g3)"> '+p.u+'</span></div></div>';}).join('');
+}
+function togP(i,e){if(e.target.tagName==='INPUT')return;ST.params[i].on=!ST.params[i].on;renderP();renderRail();}
+function renderRail(){
+ const ps=aP();
+ $('rbody').innerHTML=ps.length?ps.map(p=>{const pct=((p.def-p.lo)/Math.max(p.hi-p.lo,1e-9)*100).toFixed(0);return'<div class="rp on"><span class="rp-g g'+p.g+'">'+p.g+'</span><div class="rp-name">'+p.n+'</div><div class="rp-coord">x:'+p.lo+' \u2194 y:'+p.hi+' '+p.u+'</div><div class="rp-bar"><div class="rp-fill" style="left:0;width:'+pct+'%"></div></div><div class="rp-val">'+p.def+' '+p.u+'</div></div>';}).join(''):'<div style="padding:16px;font-family:\'JetBrains Mono\';font-size:10px;color:var(--g3)">No parameters selected.</div>';
+}
+function go3(){show(3);}
+async function doRes(){
+ const sel=aP().slice(0,5);
+ $('b3').disabled=true;$('b3').innerHTML='<span class="spin"></span>Researching…';$('rout').innerHTML='';
+ for(const p of sel){
+  try{
+   const t=await askC('Web-search for independent published estimates of "'+p.n+'" in: '+ST.desc.slice(0,200)+'. Founder range: '+p.lo+'-'+p.hi+' '+p.u+'. In max 80 words: 1-2 external estimates with named sources (org + year). State if they TIGHTEN, WIDEN, or SIT WITHIN the founder range. Paraphrase only, no quotes over 15 words.',true);
+   ST.research[p.n]=t;
+   const cls=t.includes('TIGHTEN')?'tightened':t.includes('WIDEN')?'widened':'';
+   $('rout').insertAdjacentHTML('beforeend','<div class="rsrc '+cls+'"><div class="rparam">'+p.n+' ['+p.g+']</div>'+t+'</div>');
+  }catch(e){$('rout').insertAdjacentHTML('beforeend','<div class="rsrc"><div class="rparam">'+p.n+' ['+p.g+']</div>Research unavailable ('+e.message+') — grade stands.</div>');}
+ }
+ $('b3').disabled=false;$('b3').textContent='Pull corroboration';
+ $('rout').insertAdjacentHTML('beforeend','<div class="btnrow" style="margin-top:14px"><button class="primary" onclick="go4()">Continue \u2192 supply chain</button></div>');
+}
+function go4(){
+ if(!ST.supply.length)ST.supply=ST.preset?PR[ST.preset].supply:[];
+ show(4);drawSC();
+}
+function drawSC(){
+ const cv=$('sccanvas'),ctx=cv.getContext('2d');
+ cv.width=cv.offsetWidth||800;cv.height=340;
+ const W=cv.width,H=cv.height,nodes=ST.supply;
+ ctx.clearRect(0,0,W,H);
+ const ROOT={x:60,y:H/2};
+ const spread=H*0.7;
+ const xstep=Math.min((W-120)/Math.max(nodes.length,1),160);
+ const pos=nodes.map((n,i)=>{const t=nodes.length<2?0.5:(i/(nodes.length-1));return{x:ROOT.x+xstep*(i+1),y:ROOT.y+(t-0.5)*spread};});
+ pos.forEach((p,i)=>{
+  ctx.beginPath();ctx.moveTo(ROOT.x,ROOT.y);
+  const mx=ROOT.x+(p.x-ROOT.x)*0.5;
+  ctx.bezierCurveTo(mx,ROOT.y,mx,p.y,p.x,p.y);
+  ctx.strokeStyle='#C8C8C4';ctx.lineWidth=1;ctx.setLineDash([]);ctx.stroke();
+ });
+ for(let i=0;i<pos.length-1;i++){
+  ctx.beginPath();ctx.moveTo(pos[i].x,pos[i].y);ctx.lineTo(pos[i+1].x,pos[i+1].y);
+  ctx.strokeStyle='#DCDCD8';ctx.lineWidth=0.75;ctx.setLineDash([3,5]);ctx.stroke();ctx.setLineDash([]);
+ }
+ ctx.beginPath();ctx.arc(ROOT.x,ROOT.y,5,0,Math.PI*2);ctx.fillStyle='#1A1A18';ctx.fill();
+ ctx.font='bold 10px Space Grotesk, sans-serif';ctx.fillStyle='#3A3A38';ctx.textAlign='center';
+ ctx.fillText('ORIGIN',ROOT.x,ROOT.y-12);
+ pos.forEach((p,i)=>{
+  const n=nodes[i];
+  const hi=/export|single|unprecedented|THE seam|seam/i.test(n.r);
+  ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);
+  ctx.fillStyle=hi?'#8B2A2A':'#4E7A51';ctx.fill();
+  ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();
+  ctx.font='500 11px Space Grotesk, sans-serif';ctx.fillStyle='#1A1A18';ctx.textAlign='center';
+  const nl=n.s.length>18?n.s.slice(0,17)+'...':n.s;
+  ctx.fillText(nl,p.x,p.y-14);
+  ctx.font='9.5px JetBrains Mono, monospace';ctx.fillStyle='#6B6B68';
+  const dl=n.d.length>20?n.d.slice(0,19)+'...':n.d;
+  ctx.fillText(dl,p.x,p.y+18);
+  ctx.fillStyle=hi?'#8B2A2A':'#9B5B1A';
+  const rl=n.r.length>22?n.r.slice(0,21)+'...':n.r;
+  ctx.fillText('\u26a0 '+rl,p.x,p.y+30);
+  ctx.fillStyle='#AFAFAB';
+  ctx.fillText('['+String(i+1).padStart(2,'0')+']',p.x,p.y+42);
+ });
+ ctx.textAlign='left';
+}
+function uC(ov={}){
+ let c=100;
+ aP().forEach(p=>{const v=ov[p.n]!=null?ov[p.n]:p.def;const norm=(v-p.lo)/Math.max(p.hi-p.lo,1e-9);const dir=/WACC|price|cost|shock|PUE|land|O&M|Depreciation/i.test(p.n)?1:-1;c*=(1+dir*(norm-.5)*.6);});
+ return c;
+}
+let cM,cT;
+function go5(){show(5);renderOut();}
+function setV(v,btn){ST.view=v;document.querySelectorAll('.vtabs button').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderOut();}
+function renderOut(){
+ const ps=aP();if(!ps.length)return;
+ const base=uC();
+ const hiOut=uC(Object.fromEntries(ps.map(p=>[p.n,/WACC|price|cost|shock|PUE|land|O&M|Depreciation/i.test(p.n)?p.hi:p.lo])));
+ const dG=ps.filter(p=>p.g==='D').length,cdG=ps.filter(p=>'CD'.includes(p.g)).length;
+ const V=ST.view;
+ const stats={
+  engineering:[[base.toFixed(0),'INDEXED UNIT COST (DEFAULT)','honest range: '+uC(Object.fromEntries(ps.map(p=>[p.n,/WACC|price|cost|shock|PUE|land|O&M|Depreciation/i.test(p.n)?p.lo:p.hi]))).toFixed(0)+' – '+hiOut.toFixed(0)],[cdG+' / '+ps.length,'C/D GRADE PARAMETERS','resolve these to tighten the range'],[dG,'D-GRADE ITEMS','dominate tornado until sourced']],
+  investor:[[base.toFixed(0),'BASE CASE (INDEX)','all params at default'],[hiOut.toFixed(0),'P90 DOWNSIDE','all params at adverse end'],[ps.filter(p=>'AB'.includes(p.g)).length+' / '+ps.length,'A/B GRADE (DEFENSIBLE)','survives third-party DD']],
+  client:[[(base*.95).toFixed(0)+' – '+(base*1.15).toFixed(0),'INDICATIVE PRICE BAND','firms after D-grade items resolve'],[dG+' items','GATE TO FIRM QUOTE','D-grade claims pending sourcing'],[ps.filter(p=>/land|util|lifespan|interconnect/i.test(p.n)).length,'DELIVERY-RELEVANT PARAMS','site, demand, schedule uncertainty']]
+ }[V];
+ $('vstats').innerHTML=stats.map(s=>'<div class="statbox"><div class="sk">'+s[1]+'</div><div class="sv">'+s[0]+'</div><div class="sd">'+s[2]+'</div></div>').join('');
+ const findings={engineering:'<b>Honest framing:</b> the cost range is driven by C/D-grade parameters. The methodology is exposed, not hidden. Stakeholders who probe this find your intellectual honesty, not a weakness.',investor:'<b>DD note:</b> A/B-grade parameters are defensible to third-party review. The downside index reflects all C/D parameters at adverse end simultaneously.',client:'<b>Price certainty path:</b> the band narrows as D-grade items convert to B. See data room §6 for the upgrade evidence required per item.'};
+ $('vfind').innerHTML=findings[V];
+ const labs=ps.map(p=>p.n.length>18?p.n.slice(0,17)+'...':p.n);
+ const swL=ps.map(p=>uC({[p.n]:p.lo})),swH=ps.map(p=>uC({[p.n]:p.hi}));
+ if(cM)cM.destroy();
+ cM=new Chart($('cMain'),{type:'bar',data:{labels:labs,datasets:[{label:'@ low end',data:swL,backgroundColor:'rgba(78,122,81,.5)'},{label:'@ high end',data:swH,backgroundColor:'rgba(155,91,26,.5)'},{label:'default',data:ps.map(_=>base),type:'line',borderColor:'#1A1A18',borderDash:[5,4],pointRadius:0,borderWidth:1}]},options:{plugins:{legend:{labels:{font:{family:'JetBrains Mono',size:10},color:'#6B6B68'}}},scales:{y:{title:{display:true,text:'index',font:{family:'JetBrains Mono',size:10}},ticks:{font:{family:'JetBrains Mono',size:10}}},x:{ticks:{font:{family:'JetBrains Mono',size:10}}}}}});
+ const tor=ps.map(p=>({p:(p.n.length>22?p.n.slice(0,21)+'...':p.n)+' ['+p.g+']',v:Math.abs(uC({[p.n]:p.hi})-uC({[p.n]:p.lo})),g:p.g})).sort((a,b)=>b.v-a.v);
+ if(cT)cT.destroy();
+ cT=new Chart($('cTor'),{type:'bar',data:{labels:tor.map(t=>t.p),datasets:[{label:'swing',data:tor.map(t=>t.v),backgroundColor:tor.map(t=>t.g==='D'?'rgba(139,42,42,.7)':(t.g==='C'?'rgba(155,91,26,.6)':'rgba(78,122,81,.55)'))}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{title:{display:true,text:'delta index',font:{family:'JetBrains Mono',size:10}},ticks:{font:{family:'JetBrains Mono',size:10}}},y:{ticks:{font:{family:'JetBrains Mono',size:10}}}}}});
+ $('droom').textContent=mkDR();$('tspec').textContent=mkTS();
+}
+function mkDR(){const ps=aP();return'# DATA ROOM — '+ST.desc.slice(0,70)+'...\nGenerated: '+new Date().toISOString().slice(0,10)+' | Substrate MVP v2\nAudiences: '+ST.stk.join(', ')+'\n\n## 0. Reading guide\nEvery number carries a grade and contest range.\nRanges are commitments to honesty, not weakness.\n\n## 1. Question skeleton (pre-answered)\n'+ST.questions.map((q,i)=>(i+1)+'. ['+q.cat+'] '+q.q+'\n   -> [answer + evidence ref]').join('\n')+'\n\n## 2. Parameter registry\n'+ps.map(p=>'- '+p.n+': default '+p.def+' '+p.u+' | range '+p.lo+'-'+p.hi+' | grade '+p.g+'\n  contested because: '+p.w+(ST.research[p.n]?'\n  external: '+ST.research[p.n].slice(0,160)+'...':'')).join('\n')+'\n\n## 3. Cost model\n[Equations + fixtures. All outputs reproducible from §2.]\n\n## 4. Supply chain\n'+ST.supply.map((s,i)=>('['+String(i+1).padStart(2,'0')+'] '+s.s+' — '+s.d+'\n     risk: '+s.r)).join('\n')+'\n\n## 5. Stakeholder views\n- Investor: base vs downside; which D-grades convert and when.\n- Client: indicative band; what firms it; delivery uncertainties.\n- Engineering: full honest ranges; falsification criteria.\n\n## 6. Upgrade path for D-grade items\n'+ps.filter(p=>p.g==='D').map(p=>'- '+p.n+': what evidence upgrades to B? [to fill]').join('\n');}
+function mkTS(){const ps=aP();return'# TECH SPEC SKELETON\n\n## 1. System definition\n[One paragraph. Diagram ref.]\n\n## 2. Performance parameters (graded)\n'+ps.filter(p=>!/WACC|price|land|O&M|shock|Depreciation/i.test(p.n)).map(p=>'- '+p.n+': '+p.def+' '+p.u+' | grade '+p.g+' | verification: [test/analysis/similarity]').join('\n')+'\n\n## 3. Upgrade path (C/D to B)\n'+ps.filter(p=>'CD'.includes(p.g)).map(p=>'- '+p.n+' ['+p.g+']: cheapest experiment to upgrade -> [to define]').join('\n')+'\n\n## 4. Supply chain\n'+ST.supply.map(s=>'- '+s.s+': '+s.d+' | risk: '+s.r).join('\n')+'\n\n## 5. Known unknowns (D-grade)\n'+ps.filter(p=>p.g==='D').map(p=>'- '+p.n+': '+p.w).join('\n');}
+function dl(n,t){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/markdown'}));a.download=n;a.click();}
+</script>
+</body>
+</html>
