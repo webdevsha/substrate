@@ -14,14 +14,13 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:
 #logo{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:-.02em;color:var(--deep);display:flex;align-items:center;gap:8px;padding-right:20px;border-right:1px solid var(--g2);white-space:nowrap}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--sig)}
 #tabs{display:flex;flex:1;overflow-x:auto}
-.tab{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:0 14px;border:none;background:none;color:var(--g3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;letter-spacing:.03em; transition: color 0.15s, border-color 0.15s;}
-.tab:hover:not(.locked){color:var(--ink)}
+.tab{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:0 14px;border:none;background:none;color:var(--g3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;letter-spacing:.03em}
+.tab:hover{color:var(--ink)}
 .tab.active{color:var(--deep);border-bottom-color:var(--sig)}
 .tab.locked{opacity:.3;cursor:default}
 .tab.done .tn{background:var(--sig);color:#fff}
-.tn{font-family:'JetBrains Mono';font-size:9px;font-weight:600;background:var(--g2);color:var(--g4);padding:1px 5px;border-radius:2px;margin-right:5px; transition: background 0.15s;}
+.tn{font-family:'JetBrains Mono';font-size:9px;font-weight:600;background:var(--g2);color:var(--g4);padding:1px 5px;border-radius:2px;margin-right:5px}
 #sysinfo{display:flex;align-items:center;padding:0 20px;margin-left:auto;font-family:'JetBrains Mono';font-size:10px;color:var(--g3);border-left:1px solid var(--g2)}
-
 #shell{flex:1;display:flex;overflow:hidden}
 #rail{width:260px;flex-shrink:0;border-right:1px solid var(--g2);background:var(--g1);display:flex;flex-direction:column;overflow:hidden}
 #rhead{padding:12px 16px;border-bottom:1px solid var(--g2);font-family:'JetBrains Mono';font-size:9.5px;color:var(--g3);letter-spacing:.08em}
@@ -35,7 +34,6 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:
 .rp-val{font-family:'JetBrains Mono';font-size:10px;color:var(--sighi);font-weight:600;margin-top:3px}
 .rp-g{position:absolute;top:10px;right:10px;font-family:'JetBrains Mono';font-size:9px;font-weight:600;padding:1px 5px;border-radius:2px}
 .gA{background:#1A1A18;color:#fff}.gB{background:#4E7A51;color:#fff}.gC{background:#9B5B1A;color:#fff}.gD{background:#8B2A2A;color:#fff}
-
 .pane{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .pinner{flex:1;overflow-y:auto;padding:24px 28px 40px}
 h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;letter-spacing:-.03em;color:var(--deep);margin-bottom:8px}
@@ -45,14 +43,13 @@ h3{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13.5px;color
 .note{font-size:12.5px;color:var(--g4);margin-bottom:16px;line-height:1.6;max-width:680px}
 .field{margin-bottom:16px}
 .field label{display:block;font-family:'JetBrains Mono';font-size:9.5px;letter-spacing:.08em;color:var(--g3);text-transform:uppercase;margin-bottom:6px}
-textarea,input[type=text],input[type=number]{width:100%;padding:9px 11px;border:1px solid var(--g2);border-radius:4px;font-family:'Inter';font-size:13px;background:#fff;color:var(--deep);resize:vertical}
+textarea,input[type=text]{width:100%;padding:9px 11px;border:1px solid var(--g2);border-radius:4px;font-family:'Inter';font-size:13px;background:#fff;color:var(--deep);resize:vertical}
 textarea{min-height:80px}
 textarea:focus,input:focus{outline:none;border-color:var(--sig)}
 .stkrow{display:flex;gap:8px;flex-wrap:wrap}
 .stk{display:flex;align-items:center;gap:7px;font-size:12.5px;background:#fff;border:1px solid var(--g2);border-radius:4px;padding:7px 12px;cursor:pointer}
 .stk input{accent-color:var(--sig)}
 .presets{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-
 button.ghost{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.04em;background:#fff;border:1px solid var(--g2);border-radius:4px;padding:6px 13px;color:var(--ink);cursor:pointer}
 button.ghost:hover{border-color:var(--sig);color:var(--sighi)}
 button.primary{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;background:var(--deep);color:#fff;border:none;border-radius:4px;padding:9px 20px;cursor:pointer}
@@ -74,7 +71,6 @@ button.back:hover{border-color:var(--ink);color:var(--ink)}
 .chip:hover{border-color:var(--sig)}
 .chip.on{border-color:var(--sig);background:var(--siglo);color:var(--sighi);font-weight:500}
 .chip.add{color:var(--g3);border-style:dashed}
-
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:10px}
 .pcard{background:#fff;border:1px solid var(--g2);border-radius:4px;padding:13px;cursor:pointer;position:relative;transition:border-color .15s}
 .pcard:hover{border-color:var(--g3)}
@@ -87,15 +83,6 @@ button.back:hover{border-color:var(--ink);color:var(--ink)}
 .pc-edit{display:flex;gap:6px;align-items:center;margin-top:3px}
 .pc-edit input{width:72px;padding:3px 7px;font-family:'JetBrains Mono';font-size:10.5px;border:1px solid var(--g2);border-radius:3px;background:var(--g0)}
 .gbadge{position:absolute;top:11px;right:11px;font-family:'JetBrains Mono';font-size:9px;font-weight:600;padding:2px 6px;border-radius:2px}
-
-/* Data room live tweak variables */
-.tweak-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 8px; margin-top: 12px; }
-.tweak-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; border: 1px solid var(--g2); border-radius: 4px; background: var(--g0); }
-.tin { display: flex; align-items: center; gap: 4px; margin-left: 6px; }
-.tl { font-family: 'JetBrains Mono'; font-size: 9px; color: var(--g4); text-transform: uppercase; width: 18px; text-align: right; }
-.tin input { width: 44px; padding: 3px 4px; font-family: 'JetBrains Mono'; font-size: 10.5px; border: 1px solid var(--g2); border-radius: 3px; background: #fff; text-align: left; }
-.tin input:focus { outline: none; border-color: var(--sig); }
-
 .rsrc{background:#fff;border:1px solid var(--g2);border-left:3px solid var(--g2);border-radius:4px;padding:11px 14px;margin-bottom:8px}
 .rsrc.tightened{border-left-color:var(--sig)}
 .rsrc.widened{border-left-color:var(--warn)}
@@ -120,6 +107,7 @@ pre.skel{font-family:'JetBrains Mono';font-size:10.5px;white-space:pre-wrap;back
 @keyframes sp{to{transform:rotate(360deg)}}
 .err{font-family:'JetBrains Mono';font-size:11px;color:var(--err);margin-top:8px}
 hr.rule{border:none;border-top:1px solid var(--g2);margin:18px 0}
+.rp-edit{display:flex;align-items:center;gap:6px;margin-top:6px}.rp-edit input{width:68px;padding:3px 6px;font-family:'JetBrains Mono';font-size:10px;border:1px solid var(--g2);border-radius:3px;background:#fff}
 @media(max-width:800px){.hero2,.outgrid{grid-template-columns:1fr}#rail{display:none}}
 </style>
 </head>
@@ -127,16 +115,15 @@ hr.rule{border:none;border-top:1px solid var(--g2);margin:18px 0}
 <div id="chrome">
   <div id="logo"><div class="dot"></div>SUBSTRATE</div>
   <div id="tabs">
-    <button class="tab active" onclick="navTo(0)"><span class="tn">01</span>DESCRIBE</button>
-    <button class="tab locked" onclick="navTo(1)"><span class="tn">02</span>SKELETON</button>
-    <button class="tab locked" onclick="navTo(2)"><span class="tn">03</span>PARAMETERS</button>
-    <button class="tab locked" onclick="navTo(3)"><span class="tn">04</span>RESEARCH</button>
-    <button class="tab locked" onclick="navTo(4)"><span class="tn">05</span>SUPPLY CHAIN</button>
-    <button class="tab locked" onclick="navTo(5)"><span class="tn">06</span>DATA ROOM</button>
+    <button class="tab active" data-s="0"><span class="tn">01</span>DESCRIBE</button>
+    <button class="tab locked" data-s="1"><span class="tn">02</span>SKELETON</button>
+    <button class="tab locked" data-s="2"><span class="tn">03</span>PARAMETERS</button>
+    <button class="tab locked" data-s="3"><span class="tn">04</span>RESEARCH</button>
+    <button class="tab locked" data-s="4"><span class="tn">05</span>SUPPLY CHAIN</button>
+    <button class="tab locked" data-s="5"><span class="tn">06</span>DATA ROOM</button>
   </div>
   <div id="sysinfo">STAGE 01 / 06</div>
 </div>
-
 <div id="shell">
   <div id="rail" class="hidden">
     <div id="rhead">PARAMETER REGISTRY</div>
@@ -191,7 +178,7 @@ hr.rule{border:none;border-top:1px solid var(--g2);margin:18px 0}
       <p class="note">These are the questions every audience will ask. Click the answers that apply — they shape which parameters matter most.</p>
       <div id="qlist"></div>
       <div class="btnrow">
-        <button class="back" onclick="navTo(0)">← back</button>
+        <button class="back" onclick="goBack(0)">← back</button>
         <button class="primary" id="b1" onclick="go2()">Extract parameters →</button>
       </div>
     </div>
@@ -203,7 +190,7 @@ hr.rule{border:none;border-top:1px solid var(--g2);margin:18px 0}
       <p class="note">Click to include. Edit contest ranges — they are commitments to honesty. <b>D-grade items dominate every cost tornado until sourced.</b></p>
       <div class="pgrid" id="pgrid"></div>
       <div class="btnrow" style="margin-top:14px">
-        <button class="back" onclick="navTo(1)">← back</button>
+        <button class="back" onclick="goBack(1)">← back</button>
         <button class="primary" onclick="go3()">Continue → live research</button>
       </div>
     </div>
@@ -216,7 +203,7 @@ hr.rule{border:none;border-top:1px solid var(--g2);margin:18px 0}
       <div class="btnrow" style="margin-bottom:14px">
         <button class="primary" id="b3" onclick="doRes()">Pull corroboration</button>
         <button class="ghost" onclick="go4()">Skip →</button>
-        <button class="back" onclick="navTo(2)">← back</button>
+        <button class="back" onclick="goBack(2)">← back</button>
       </div>
       <div id="rout"></div>
     </div>
@@ -228,7 +215,7 @@ hr.rule{border:none;border-top:1px solid var(--g2);margin:18px 0}
       <p class="note">Each node is a supply stage. Risk marks the handoff seams — where provenance gets lost.</p>
       <canvas id="sccanvas" style="width:100%;height:340px;background:#fff;border:1px solid var(--g2);border-radius:4px;display:block"></canvas>
       <div class="btnrow" style="margin-top:14px">
-        <button class="back" onclick="navTo(3)">← back</button>
+        <button class="back" onclick="goBack(3)">← back</button>
         <button class="primary" onclick="go5()">Generate data room &amp; visualization →</button>
       </div>
     </div>
@@ -245,16 +232,6 @@ hr.rule{border:none;border-top:1px solid var(--g2);margin:18px 0}
       </div>
       <div class="statrow" id="vstats"></div>
       <div class="finding" id="vfind"></div>
-      
-      <!-- New parameter tweaker dynamically placed -->
-      <div class="cbox">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
-          <h3 style="margin:0;">LIVE PARAMETER TWEAKS</h3>
-          <span style="font-family:'JetBrains Mono'; font-size:9px; color:var(--g4);">Updates visually propagate to charts instantly</span>
-        </div>
-        <div class="tweak-grid" id="dtweaks"></div>
-      </div>
-
       <div class="cbox"><h3>COST INDEX — PER-PARAMETER SWEEP (all else at default)</h3><canvas id="cMain"></canvas></div>
       <div class="cbox"><h3>UNCERTAINTY TORNADO — % SWING ACROSS CONTEST RANGE (D=red · C=amber · A/B=green)</h3><canvas id="cTor"></canvas></div>
       <hr class="rule">
@@ -262,16 +239,15 @@ hr.rule{border:none;border-top:1px solid var(--g2);margin:18px 0}
         <div><h3>Data room skeleton</h3><pre class="skel" id="droom"></pre><button class="ghost" style="margin-top:8px" onclick="dl('data_room.md',$('droom').textContent)">↓ download .md</button></div>
         <div><h3>Tech spec skeleton</h3><pre class="skel" id="tspec"></pre><button class="ghost" style="margin-top:8px" onclick="dl('tech_spec.md',$('tspec').textContent)">↓ download .md</button></div>
       </div>
-      <div class="btnrow" style="margin-top:16px"><button class="back" onclick="navTo(4)">← back</button></div>
+      <div class="btnrow" style="margin-top:16px"><button class="back" onclick="goBack(4)">← back</button></div>
     </div>
 
   </div>
   </div>
 </div>
-
 <script>
 const $=id=>document.getElementById(id);
-let ST={stage:0, maxStage:0, desc:'', stk:[], questions:[], params:[], supply:[], research:{}, view:'engineering', preset:null};
+let ST={stage:0,stageReached:0,desc:'',stk:[],questions:[],params:[],supply:[],research:{},view:'engineering',preset:null};
 const PR={
 sbsp:{desc:'A constellation of space-based solar power (SBSP) satellites beaming microwave energy to rectenna ground stations, selling firm baseload clean power to utilities and industrial clients in Malaysia (IRDA, TNB).',
 questions:[
@@ -325,7 +301,6 @@ supply:[
 {s:'Demand / workloads',d:'Sovereign + enterprise clients',r:'Utilization risk lives here'}
 ]}
 };
-
 function loadP(k){ST.preset=k;$('techDesc').value=PR[k].desc;upCoord();}
 function upCoord(){
  const d=$('techDesc').value,k=ST.preset&&PR[ST.preset]&&PR[ST.preset].desc===d?ST.preset:null;
@@ -338,35 +313,17 @@ function upCoord(){
 $('techDesc').addEventListener('input',upCoord);
 document.querySelectorAll('.ski').forEach(x=>x.addEventListener('change',upCoord));
 upCoord();
-
 const SID=['s0','s1','s2','s3','s4','s5'];
-
-/* Update views and sync tab access limits */
 function show(n){
- ST.maxStage = Math.max(ST.maxStage || 0, n);
  SID.forEach((id,i)=>$(id).classList.toggle('hidden',i!==n));
- document.querySelectorAll('.tab').forEach((t,i)=>{
-    if (i === n) t.className = 'tab active';
-    else if (i <= ST.maxStage) t.className = 'tab done';
-    else t.className = 'tab locked';
- });
+ document.querySelectorAll('.tab').forEach((t,i)=>{t.className='tab'+(i<n?' done':(i===n?' active':' locked'));});
  $('sysinfo').textContent='STAGE 0'+(n+1)+' / 06';
  $('rail').classList.toggle('hidden',n<2);
+ ST.stageReached=Math.max(ST.stageReached||0,n);
  ST.stage=n;$('pinner').scrollTop=0;
+ document.querySelectorAll('.tab').forEach((t,i)=>{if(i<=ST.stageReached){t.classList.remove('locked');t.onclick=()=>show(i);}else t.onclick=null;});
 }
-
-/* Navigational router for tabs and back/next */
-function navTo(n) {
-  if (n <= ST.maxStage) {
-    if (n === 4) drawSC();
-    if (n === 5) {
-      renderTweaks();
-      renderOut();
-    }
-    show(n);
-  }
-}
-
+function goBack(n){show(n);}
 async function askC(p,s=false){
  const b={model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:p}]};
  if(s)b.tools=[{type:'web_search_20250305',name:'web_search'}];
@@ -375,7 +332,6 @@ async function askC(p,s=false){
  return d.content.filter(x=>x.type==='text').map(x=>x.text).join('\n');
 }
 function pJ(t){return JSON.parse(t.replace(/```json|```/g,'').trim());}
-
 async function go1(){
  ST.desc=$('techDesc').value.trim();ST.stk=[...$('pinner').querySelectorAll('.ski:checked')].map(x=>x.value);
  if(!ST.desc){$('e0').textContent='Describe the technology first.';return;}
@@ -388,9 +344,8 @@ async function go1(){
   $('b0').disabled=false;$('b0').textContent='Generate question skeleton →';
  }
  $('qlist').innerHTML=ST.questions.map((x,i)=>'<div class="qblock"><div class="qcat">'+x.cat+'</div><div class="qq">'+x.q+'</div><div class="qwhy">'+x.why+'</div><div class="chips">'+x.opts.map(o=>'<span class="chip" onclick="this.classList.toggle(\'on\')">'+o+'</span>').join('')+'<span class="chip add" onclick="var v=prompt(\'Your answer:\');if(v)this.insertAdjacentHTML(\'beforebegin\',\'<span class=\\\'chip on\\\'>\'+v+\'</span>\')">+ add</span></div></div>').join('');
- navTo(1);
+ show(1);
 }
-
 async function go2(){
  const ans=[...document.querySelectorAll('#qlist .chip.on')].map(c=>c.textContent);
  if(ST.preset&&PR[ST.preset]){ST.params=JSON.parse(JSON.stringify(PR[ST.preset].params));}
@@ -400,36 +355,21 @@ async function go2(){
   catch(e){alert('API unavailable. '+e.message);ST.params=PR.compute.params;}
   $('b1').disabled=false;$('b1').textContent='Extract parameters →';
  }
- renderP(); renderRail(); navTo(2);
+ renderP();show(2);renderRail();
 }
 function aP(){return ST.params.filter(p=>p.on);}
-
-/* Universal function for updating parameter values across inputs safely */
-function updP(i, k, vStr, skipPReRender = false) {
-  if (vStr === '' || vStr === '-' || vStr.endsWith('.')) return; // Allow mid-typing
-  let v = parseFloat(vStr);
-  if (isNaN(v)) return;
-  ST.params[i][k] = v;
-  if (!skipPReRender) renderP();
-  renderRail();
-  if (ST.stage === 5) renderOut(); // Instantly visually propagate changes to charts
-}
-
 function renderP(){
  $('pgrid').innerHTML=ST.params.map((p,i)=>{
   const pct=((p.def-p.lo)/Math.max(p.hi-p.lo,1e-9)*100).toFixed(0);
-  return '<div class="pcard '+(p.on?'on':'')+'" onclick="togP('+i+',event)"><span class="gbadge g'+p.g+'">'+p.g+'</span><div class="pc-name">'+p.n+'</div><div class="pc-coord">x:'+p.lo+' '+p.u+' \u2194 y:'+p.hi+' '+p.u+'</div><div class="pc-why">'+p.w+'</div><div class="pc-bar"><div class="pc-fill" style="left:0;width:'+pct+'%"></div></div><div class="pc-edit" onclick="event.stopPropagation()"><input type="text" value="'+p.lo+'" oninput="updP('+i+',\'lo\',this.value,true)"> \u2013 <input type="text" value="'+p.hi+'" oninput="updP('+i+',\'hi\',this.value,true)"><span style="font-family:\'JetBrains Mono\';font-size:9.5px;color:var(--g3)"> '+p.u+'</span></div></div>';}).join('');
+  return '<div class="pcard '+(p.on?'on':'')+'" onclick="togP('+i+',event)"><span class="gbadge g'+p.g+'">'+p.g+'</span><div class="pc-name">'+p.n+'</div><div class="pc-coord">x:'+p.lo+' '+p.u+' \u2194 y:'+p.hi+' '+p.u+'</div><div class="pc-why">'+p.w+'</div><div class="pc-bar"><div class="pc-fill" style="left:0;width:'+pct+'%"></div></div><div class="pc-edit" onclick="event.stopPropagation()"><input type="text" value="'+p.lo+'" onchange="ST.params['+i+'].lo=+this.value;renderRail()"> \u2013 <input type="text" value="'+p.hi+'" onchange="ST.params['+i+'].hi=+this.value;renderRail()"><span style="font-family:\'JetBrains Mono\';font-size:9.5px;color:var(--g3)"> '+p.u+'</span></div></div>';}).join('');
 }
-
 function togP(i,e){if(e.target.tagName==='INPUT')return;ST.params[i].on=!ST.params[i].on;renderP();renderRail();}
-
+function updateRailParam(name,key,val){const p=ST.params.find(x=>x.n===name);if(!p)return;p[key]=+val;renderRail();if(ST.stage===2)renderP();if(ST.stage===5)renderOut();}
 function renderRail(){
  const ps=aP();
- $('rbody').innerHTML=ps.length?ps.map(p=>{const pct=((p.def-p.lo)/Math.max(p.hi-p.lo,1e-9)*100).toFixed(0);return'<div class="rp on"><span class="rp-g g'+p.g+'">'+p.g+'</span><div class="rp-name">'+p.n+'</div><div class="rp-coord">x:'+p.lo+' \u2194 y:'+p.hi+' '+p.u+'</div><div class="rp-bar"><div class="rp-fill" style="left:0;width:'+pct+'%"></div></div><div class="rp-val">'+p.def+' '+p.u+'</div></div>';}).join(''):'<div style="padding:16px;font-family:\'JetBrains Mono\';font-size:10px;color:var(--g3)">No parameters selected.</div>';
+ $('rbody').innerHTML=ps.length?ps.map(p=>{const pct=((p.def-p.lo)/Math.max(p.hi-p.lo,1e-9)*100).toFixed(0);const edit=ST.stage===5?'<div class="rp-edit"><input type="number" value="'+p.lo+'" onchange="updateRailParam(\''+p.n+'\',\'lo\',this.value)"><span>↔</span><input type="number" value="'+p.hi+'" onchange="updateRailParam(\''+p.n+'\',\'hi\',this.value)"><span>'+p.u+'</span></div>':'<div class="rp-coord">x:'+p.lo+' ↔ y:'+p.hi+' '+p.u+'</div>';return'<div class="rp on"><span class="rp-g g'+p.g+'">'+p.g+'</span><div class="rp-name">'+p.n+'</div>'+edit+'<div class="rp-bar"><div class="rp-fill" style="left:0;width:'+pct+'%"></div></div><div class="rp-val">'+p.def+' '+p.u+'</div></div>';}).join(''):'<div style="padding:16px;font-family:\'JetBrains Mono\';font-size:10px;color:var(--g3)">No parameters selected.</div>';
 }
-
-function go3(){navTo(3);}
-
+function go3(){show(3);}
 async function doRes(){
  const sel=aP().slice(0,5);
  $('b3').disabled=true;$('b3').innerHTML='<span class="spin"></span>Researching…';$('rout').innerHTML='';
@@ -444,12 +384,10 @@ async function doRes(){
  $('b3').disabled=false;$('b3').textContent='Pull corroboration';
  $('rout').insertAdjacentHTML('beforeend','<div class="btnrow" style="margin-top:14px"><button class="primary" onclick="go4()">Continue \u2192 supply chain</button></div>');
 }
-
 function go4(){
  if(!ST.supply.length)ST.supply=ST.preset?PR[ST.preset].supply:[];
- navTo(4);
+ show(4);drawSC();
 }
-
 function drawSC(){
  const cv=$('sccanvas'),ctx=cv.getContext('2d');
  cv.width=cv.offsetWidth||800;cv.height=340;
@@ -492,33 +430,14 @@ function drawSC(){
  });
  ctx.textAlign='left';
 }
-
 function uC(ov={}){
  let c=100;
  aP().forEach(p=>{const v=ov[p.n]!=null?ov[p.n]:p.def;const norm=(v-p.lo)/Math.max(p.hi-p.lo,1e-9);const dir=/WACC|price|cost|shock|PUE|land|O&M|Depreciation/i.test(p.n)?1:-1;c*=(1+dir*(norm-.5)*.6);});
  return c;
 }
-
 let cM,cT;
-function go5(){navTo(5);}
+function go5(){show(5);renderOut();}
 function setV(v,btn){ST.view=v;document.querySelectorAll('.vtabs button').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderOut();}
-
-function renderTweaks() {
-   $('dtweaks').innerHTML = aP().map(p => {
-      let origI = ST.params.indexOf(p);
-      return `<div class="tweak-row">
-          <div style="font-weight:500; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding-right:8px;" title="${p.n}">
-            <span class="gbadge g${p.g}" style="position:static; margin-right:6px; display:inline-block; padding:2px 5px; font-size:8px;">${p.g}</span>${p.n}
-          </div>
-          <div style="display:flex; gap:6px;">
-            <div class="tin"><span class="tl">lo</span><input type="text" value="${p.lo}" oninput="updP(${origI}, 'lo', this.value, true)"></div>
-            <div class="tin"><span class="tl">def</span><input type="text" value="${p.def}" oninput="updP(${origI}, 'def', this.value, true)"></div>
-            <div class="tin"><span class="tl">hi</span><input type="text" value="${p.hi}" oninput="updP(${origI}, 'hi', this.value, true)"></div>
-          </div>
-        </div>`;
-   }).join('');
-}
-
 function renderOut(){
  const ps=aP();if(!ps.length)return;
  const base=uC();
@@ -542,7 +461,6 @@ function renderOut(){
  cT=new Chart($('cTor'),{type:'bar',data:{labels:tor.map(t=>t.p),datasets:[{label:'swing',data:tor.map(t=>t.v),backgroundColor:tor.map(t=>t.g==='D'?'rgba(139,42,42,.7)':(t.g==='C'?'rgba(155,91,26,.6)':'rgba(78,122,81,.55)'))}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{title:{display:true,text:'delta index',font:{family:'JetBrains Mono',size:10}},ticks:{font:{family:'JetBrains Mono',size:10}}},y:{ticks:{font:{family:'JetBrains Mono',size:10}}}}}});
  $('droom').textContent=mkDR();$('tspec').textContent=mkTS();
 }
-
 function mkDR(){const ps=aP();return'# DATA ROOM — '+ST.desc.slice(0,70)+'...\nGenerated: '+new Date().toISOString().slice(0,10)+' | Substrate MVP v2\nAudiences: '+ST.stk.join(', ')+'\n\n## 0. Reading guide\nEvery number carries a grade and contest range.\nRanges are commitments to honesty, not weakness.\n\n## 1. Question skeleton (pre-answered)\n'+ST.questions.map((q,i)=>(i+1)+'. ['+q.cat+'] '+q.q+'\n   -> [answer + evidence ref]').join('\n')+'\n\n## 2. Parameter registry\n'+ps.map(p=>'- '+p.n+': default '+p.def+' '+p.u+' | range '+p.lo+'-'+p.hi+' | grade '+p.g+'\n  contested because: '+p.w+(ST.research[p.n]?'\n  external: '+ST.research[p.n].slice(0,160)+'...':'')).join('\n')+'\n\n## 3. Cost model\n[Equations + fixtures. All outputs reproducible from §2.]\n\n## 4. Supply chain\n'+ST.supply.map((s,i)=>('['+String(i+1).padStart(2,'0')+'] '+s.s+' — '+s.d+'\n     risk: '+s.r)).join('\n')+'\n\n## 5. Stakeholder views\n- Investor: base vs downside; which D-grades convert and when.\n- Client: indicative band; what firms it; delivery uncertainties.\n- Engineering: full honest ranges; falsification criteria.\n\n## 6. Upgrade path for D-grade items\n'+ps.filter(p=>p.g==='D').map(p=>'- '+p.n+': what evidence upgrades to B? [to fill]').join('\n');}
 function mkTS(){const ps=aP();return'# TECH SPEC SKELETON\n\n## 1. System definition\n[One paragraph. Diagram ref.]\n\n## 2. Performance parameters (graded)\n'+ps.filter(p=>!/WACC|price|land|O&M|shock|Depreciation/i.test(p.n)).map(p=>'- '+p.n+': '+p.def+' '+p.u+' | grade '+p.g+' | verification: [test/analysis/similarity]').join('\n')+'\n\n## 3. Upgrade path (C/D to B)\n'+ps.filter(p=>'CD'.includes(p.g)).map(p=>'- '+p.n+' ['+p.g+']: cheapest experiment to upgrade -> [to define]').join('\n')+'\n\n## 4. Supply chain\n'+ST.supply.map(s=>'- '+s.s+': '+s.d+' | risk: '+s.r).join('\n')+'\n\n## 5. Known unknowns (D-grade)\n'+ps.filter(p=>p.g==='D').map(p=>'- '+p.n+': '+p.w).join('\n');}
 function dl(n,t){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/markdown'}));a.download=n;a.click();}
