@@ -1,0 +1,19 @@
+{
+  "id": "compute-shock-002",
+  "module": "compute",
+  "statement": "Export-control shock",
+  "short_name": "Export-control shock",
+  "value": 1.2,
+  "unit": "x capex",
+  "grade": "D",
+  "contest_range": [
+    1,
+    2.5
+  ],
+  "why_contested": "Event-shock multiplier; scenario not forecast.",
+  "enabled_by_default": true,
+  "access": "public",
+  "status": "active",
+  "sources": [],
+  "last_reviewed": "2026-07-05"
+}

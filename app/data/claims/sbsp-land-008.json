@@ -1,0 +1,19 @@
+{
+  "id": "sbsp-land-008",
+  "module": "sbsp",
+  "statement": "Rectenna land cost",
+  "short_name": "Rectenna land cost",
+  "value": 4,
+  "unit": "$M / site",
+  "grade": "D",
+  "contest_range": [
+    1,
+    15
+  ],
+  "why_contested": "IRDA-zone vs urban-adjacent — drives client-side price anchor.",
+  "enabled_by_default": true,
+  "access": "public",
+  "status": "active",
+  "sources": [],
+  "last_reviewed": "2026-07-05"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "sbsp-lifespan-006",
+  "module": "sbsp",
+  "statement": "Operational lifespan",
+  "short_name": "Operational lifespan",
+  "value": 25,
+  "unit": "yr",
+  "grade": "C",
+  "contest_range": [
+    10,
+    25
+  ],
+  "why_contested": "Internal doc uses 10, 20, and 25yr across design generations.",
+  "enabled_by_default": true,
+  "access": "public",
+  "status": "active",
+  "sources": [
+    {
+      "id": "src-v3",
+      "type": "doc",
+      "title": "v3 dashboard parameter registry (migrated 2026-07-05)"
+    }
+  ],
+  "last_reviewed": "2026-07-05"
+}

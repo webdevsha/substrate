@@ -1,0 +1,25 @@
+{
+  "id": "sbsp-capacity-005",
+  "module": "sbsp",
+  "statement": "Capacity factor",
+  "short_name": "Capacity factor",
+  "value": 59,
+  "unit": "%",
+  "grade": "C",
+  "contest_range": [
+    30,
+    70
+  ],
+  "why_contested": "Core argument vs terrestrial solar (15-25%). Needs external corroboration.",
+  "enabled_by_default": true,
+  "access": "public",
+  "status": "active",
+  "sources": [
+    {
+      "id": "src-v3",
+      "type": "doc",
+      "title": "v3 dashboard parameter registry (migrated 2026-07-05)"
+    }
+  ],
+  "last_reviewed": "2026-07-05"
+}

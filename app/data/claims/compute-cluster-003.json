@@ -1,0 +1,25 @@
+{
+  "id": "compute-cluster-003",
+  "module": "compute",
+  "statement": "Cluster size",
+  "short_name": "Cluster size",
+  "value": 10000,
+  "unit": "GPUs",
+  "grade": "A",
+  "contest_range": [
+    1000,
+    50000
+  ],
+  "why_contested": "Choice variable.",
+  "enabled_by_default": true,
+  "access": "public",
+  "status": "active",
+  "sources": [
+    {
+      "id": "src-v3",
+      "type": "doc",
+      "title": "v3 dashboard parameter registry (migrated 2026-07-05)"
+    }
+  ],
+  "last_reviewed": "2026-07-05"
+}

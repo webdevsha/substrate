@@ -1,0 +1,25 @@
+{
+  "id": "compute-power-004",
+  "module": "compute",
+  "statement": "Electricity price",
+  "short_name": "Electricity price",
+  "value": 0.1,
+  "unit": "$ / kWh",
+  "grade": "C",
+  "contest_range": [
+    0.03,
+    0.3
+  ],
+  "why_contested": "Shared lever with any co-located energy asset.",
+  "enabled_by_default": true,
+  "access": "public",
+  "status": "active",
+  "sources": [
+    {
+      "id": "src-v3",
+      "type": "doc",
+      "title": "v3 dashboard parameter registry (migrated 2026-07-05)"
+    }
+  ],
+  "last_reviewed": "2026-07-05"
+}

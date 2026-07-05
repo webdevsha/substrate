@@ -1,0 +1,25 @@
+{
+  "id": "compute-util-006",
+  "module": "compute",
+  "statement": "Utilization",
+  "short_name": "Utilization",
+  "value": 70,
+  "unit": "%",
+  "grade": "C",
+  "contest_range": [
+    40,
+    95
+  ],
+  "why_contested": "Demand-side uncertainty; honest number rarely shown in pitches.",
+  "enabled_by_default": true,
+  "access": "public",
+  "status": "active",
+  "sources": [
+    {
+      "id": "src-v3",
+      "type": "doc",
+      "title": "v3 dashboard parameter registry (migrated 2026-07-05)"
+    }
+  ],
+  "last_reviewed": "2026-07-05"
+}

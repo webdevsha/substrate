@@ -1,0 +1,25 @@
+{
+  "id": "sbsp-satcost-003",
+  "module": "sbsp",
+  "statement": "Satellite unit cost at volume",
+  "short_name": "Satellite unit cost at volume",
+  "value": 12.9,
+  "unit": "$M / sat",
+  "grade": "C",
+  "contest_range": [
+    12.9,
+    27.9
+  ],
+  "why_contested": "Learning-curve claim; floor assumes 50-unit fleet.",
+  "enabled_by_default": true,
+  "access": "public",
+  "status": "active",
+  "sources": [
+    {
+      "id": "src-v3",
+      "type": "doc",
+      "title": "v3 dashboard parameter registry (migrated 2026-07-05)"
+    }
+  ],
+  "last_reviewed": "2026-07-05"
+}

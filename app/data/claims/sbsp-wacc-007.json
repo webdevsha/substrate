@@ -1,0 +1,19 @@
+{
+  "id": "sbsp-wacc-007",
+  "module": "sbsp",
+  "statement": "WACC / discount rate",
+  "short_name": "WACC / discount rate",
+  "value": 8,
+  "unit": "%",
+  "grade": "D",
+  "contest_range": [
+    0,
+    15
+  ],
+  "why_contested": "Absent from internal docs. Investors apply 7-10% regardless.",
+  "enabled_by_default": true,
+  "access": "public",
+  "status": "active",
+  "sources": [],
+  "last_reviewed": "2026-07-05"
+}

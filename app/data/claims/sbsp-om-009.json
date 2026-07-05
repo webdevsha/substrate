@@ -1,0 +1,19 @@
+{
+  "id": "sbsp-om-009",
+  "module": "sbsp",
+  "statement": "O&M annual cost",
+  "short_name": "O&M annual cost",
+  "value": 2,
+  "unit": "% capex/yr",
+  "grade": "D",
+  "contest_range": [
+    1,
+    5
+  ],
+  "why_contested": "No operating history exists for the class.",
+  "enabled_by_default": false,
+  "access": "public",
+  "status": "active",
+  "sources": [],
+  "last_reviewed": "2026-07-05"
+}

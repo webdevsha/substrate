@@ -1,0 +1,149 @@
+---
+import { loadClaims, auditClaims } from "../lib/l1-claims/store";
+import { sbspModel, DEFAULT_PARAMS } from "../lib/l3-models/sbsp";
+import { rankVoi, monteCarlo } from "../lib/l4-uncertainty/engine";
+
+const claims = loadClaims();
+const audit = auditClaims();
+
+// Wire L1 claims → L3 model → L4 VOI, computed at build time.
+// Only claims the SBSP model actually consumes enter the MC/VOI run.
+const BOUND = ["sbsp-launch-001", "sbsp-capacity-005", "sbsp-lifespan-006", "sbsp-wacc-007"];
+const modelClaims = claims.filter((c) => BOUND.includes(c.id));
+const evaluate = (v: Record<string, number>) =>
+  sbspModel({
+    ...DEFAULT_PARAMS,
+    launchCostPerKg: v["sbsp-launch-001"] ?? DEFAULT_PARAMS.launchCostPerKg,
+    capacityFactor: (v["sbsp-capacity-005"] ?? DEFAULT_PARAMS.capacityFactor * 100) / 100,
+    lifetimeYears: v["sbsp-lifespan-006"] ?? DEFAULT_PARAMS.lifetimeYears,
+    discountRate: (v["sbsp-wacc-007"] ?? DEFAULT_PARAMS.discountRate * 100) / 100,
+  }).lcoe;
+
+const voi = rankVoi(modelClaims, evaluate);
+const mc = monteCarlo(modelClaims, evaluate, 5000);
+const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
+const gradeColor: Record<string, string> = { A: "#4ade80", B: "#a3e635", C: "#fbbf24", D: "#f87171" };
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Substrate · CetaLabs</title>
+    <meta name="description" content="Graded claims, propagated uncertainty, and a research agenda generated from what you don't know." />
+  </head>
+  <body>
+    <header>
+      <span class="wordmark">SUBSTRATE</span>
+      <nav>
+        <a href="/app/">Open the instrument →</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>Every number carries its own doubt.</h1>
+        <p class="lede">
+          Substrate is a techno-economic reasoning instrument: atomic claims with provenance and
+          grades, deterministic models that consume them, and an uncertainty engine that tells you
+          <em>which unknown is most worth resolving next</em>.
+        </p>
+        <div class="cta">
+          <a class="btn primary" href="/app/">Explore the SBSP model</a>
+          <a class="btn" href="https://github.com" rel="noopener">Read the architecture</a>
+        </div>
+      </section>
+
+      <section class="live">
+        <h2>Live from the substrate <span class="sub">— computed from the claim registry at build time</span></h2>
+        <div class="cards">
+          <div class="card">
+            <div class="label">L1 · Claim registry</div>
+            <div class="big">{audit.total}</div>
+            <div class="detail">active claims · {audit.stale.length} flagged stale · {audit.restricted} restricted</div>
+          </div>
+          <div class="card">
+            <div class="label">L3+L4 · SBSP LCOE (Monte Carlo, n={mc.samples})</div>
+            <div class="big">${fmt(mc.p50)}<span class="unit">/MWh</span></div>
+            <div class="detail">90% interval: ${fmt(mc.p05)} – ${fmt(mc.p95)}</div>
+          </div>
+          <div class="card">
+            <div class="label">L4 · Resolve next (VOI)</div>
+            {voi.slice(0, 3).map((r) => (
+              <div class="voi-row">
+                <span class="grade" style={`background:${gradeColor[r.grade]}`}>{r.grade}</span>
+                <span class="voi-id">{r.claimId}</span>
+                <span class="voi-share">{Math.round(r.share * 100)}% of swing</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="layers">
+        <h2>Seven layers, one integrity rule</h2>
+        <p class="sub">Nothing bypasses L1 — every layer reads and writes graded claims.</p>
+        <ol>
+          <li><b>L1 · Claim Substrate</b> — provenance, grades, contest ranges, version lineage <span class="tag live-tag">live</span></li>
+          <li><b>L2 · Extraction & Corroboration</b> — documents → candidates; human gate, always <span class="tag">stub</span></li>
+          <li><b>L3 · Model Registry</b> — pure functions with fixtures; SBSP LCOE shipped <span class="tag live-tag">live</span></li>
+          <li><b>L4 · Uncertainty Engine</b> — grade→distribution, Monte Carlo, VOI ranking <span class="tag live-tag">live</span></li>
+          <li><b>L5 · Forecasting</b> — event shocks, scenario composition <span class="tag">seed</span></li>
+          <li><b>L6 · Orchestration</b> — staleness sweeps, agent queues <span class="tag">deferred</span></li>
+          <li><b>L7 · Presentation</b> — this page + the instrument at <a href="/app/">/app</a> <span class="tag live-tag">live</span></li>
+        </ol>
+      </section>
+    </main>
+
+    <footer>CetaLabs · Substrate v0.1 · claims propose, humans dispose.</footer>
+
+    <style>
+      :root {
+        --bg: #0c0e12; --panel: #14171d; --border: #23272f;
+        --text: #e6e8ec; --muted: #8b919c; --accent: #7dd3fc;
+      }
+      * { box-sizing: border-box; margin: 0; }
+      body {
+        background: var(--bg); color: var(--text);
+        font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, sans-serif;
+        min-height: 100vh; display: flex; flex-direction: column;
+      }
+      header {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 1.2rem 2rem; border-bottom: 1px solid var(--border);
+      }
+      .wordmark { letter-spacing: 0.35em; font-weight: 700; font-size: 0.9rem; }
+      nav a { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+      main { flex: 1; max-width: 960px; margin: 0 auto; padding: 3rem 1.5rem; width: 100%; }
+      .hero h1 { font-size: clamp(1.8rem, 4.5vw, 3rem); line-height: 1.15; letter-spacing: -0.02em; }
+      .lede { color: var(--muted); max-width: 42rem; margin-top: 1rem; font-size: 1.1rem; }
+      .cta { margin-top: 1.8rem; display: flex; gap: 0.8rem; flex-wrap: wrap; }
+      .btn {
+        padding: 0.65rem 1.2rem; border: 1px solid var(--border); border-radius: 8px;
+        color: var(--text); text-decoration: none; font-size: 0.95rem;
+      }
+      .btn.primary { background: var(--accent); color: #06202c; border-color: var(--accent); font-weight: 600; }
+      section { margin-top: 4rem; }
+      h2 { font-size: 1.25rem; margin-bottom: 1rem; }
+      .sub { color: var(--muted); font-weight: 400; font-size: 0.85rem; }
+      .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+      .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; }
+      .label { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
+      .big { font-size: 2.2rem; font-weight: 700; margin: 0.4rem 0 0.2rem; font-variant-numeric: tabular-nums; }
+      .unit { font-size: 1rem; color: var(--muted); font-weight: 400; }
+      .detail { color: var(--muted); font-size: 0.85rem; }
+      .voi-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.6rem; font-size: 0.85rem; }
+      .grade { color: #0c0e12; font-weight: 700; border-radius: 4px; padding: 0 0.4rem; font-size: 0.75rem; }
+      .voi-id { font-family: ui-monospace, monospace; }
+      .voi-share { margin-left: auto; color: var(--muted); }
+      .layers ol { padding-left: 1.2rem; display: grid; gap: 0.55rem; margin-top: 1rem; }
+      .tag {
+        font-size: 0.7rem; border: 1px solid var(--border); border-radius: 99px;
+        padding: 0.05rem 0.5rem; color: var(--muted); margin-left: 0.4rem; vertical-align: middle;
+      }
+      .live-tag { color: #4ade80; border-color: #234; }
+      .layers a { color: var(--accent); }
+      footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding: 2rem; border-top: 1px solid var(--border); }
+    </style>
+  </body>
+</html>

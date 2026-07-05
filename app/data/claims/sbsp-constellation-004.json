@@ -1,0 +1,25 @@
+{
+  "id": "sbsp-constellation-004",
+  "module": "sbsp",
+  "statement": "Constellation size",
+  "short_name": "Constellation size",
+  "value": 50,
+  "unit": "sats",
+  "grade": "A",
+  "contest_range": [
+    1,
+    50
+  ],
+  "why_contested": "Choice variable — amortizes NRE.",
+  "enabled_by_default": true,
+  "access": "public",
+  "status": "active",
+  "sources": [
+    {
+      "id": "src-v3",
+      "type": "doc",
+      "title": "v3 dashboard parameter registry (migrated 2026-07-05)"
+    }
+  ],
+  "last_reviewed": "2026-07-05"
+}

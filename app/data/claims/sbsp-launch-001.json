@@ -1,0 +1,25 @@
+{
+  "id": "sbsp-launch-001",
+  "module": "sbsp",
+  "statement": "Launch cost to orbit",
+  "short_name": "Launch cost to orbit",
+  "value": 850,
+  "unit": "$ / kg",
+  "grade": "C",
+  "contest_range": [
+    850,
+    8000
+  ],
+  "why_contested": "Provider projections vs contracted prices diverge ~10x. Starship $850/kg is uncontracted.",
+  "enabled_by_default": true,
+  "access": "public",
+  "status": "active",
+  "sources": [
+    {
+      "id": "src-v3",
+      "type": "doc",
+      "title": "v3 dashboard parameter registry (migrated 2026-07-05)"
+    }
+  ],
+  "last_reviewed": "2026-07-05"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "compute-depr-007",
+  "module": "compute",
+  "statement": "Depreciation horizon",
+  "short_name": "Depreciation horizon",
+  "value": 4,
+  "unit": "yr",
+  "grade": "C",
+  "contest_range": [
+    3,
+    6
+  ],
+  "why_contested": "GPU obsolescence pace.",
+  "enabled_by_default": false,
+  "access": "public",
+  "status": "active",
+  "sources": [
+    {
+      "id": "src-v3",
+      "type": "doc",
+      "title": "v3 dashboard parameter registry (migrated 2026-07-05)"
+    }
+  ],
+  "last_reviewed": "2026-07-05"
+}

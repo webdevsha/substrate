@@ -1,0 +1,25 @@
+{
+  "id": "compute-pue-005",
+  "module": "compute",
+  "statement": "PUE",
+  "short_name": "PUE",
+  "value": 1.3,
+  "unit": "ratio",
+  "grade": "C",
+  "contest_range": [
+    1.1,
+    1.6
+  ],
+  "why_contested": "Tropical siting incurs a cooling penalty vs temperate benchmarks.",
+  "enabled_by_default": true,
+  "access": "public",
+  "status": "active",
+  "sources": [
+    {
+      "id": "src-v3",
+      "type": "doc",
+      "title": "v3 dashboard parameter registry (migrated 2026-07-05)"
+    }
+  ],
+  "last_reviewed": "2026-07-05"
+}

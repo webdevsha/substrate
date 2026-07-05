@@ -1,0 +1,19 @@
+{
+  "id": "compute-accel-001",
+  "module": "compute",
+  "statement": "Accelerator unit price",
+  "short_name": "Accelerator unit price",
+  "value": 30,
+  "unit": "$k",
+  "grade": "D",
+  "contest_range": [
+    15,
+    45
+  ],
+  "why_contested": "[UNVERIFIED] Volatile; allocation-constrained.",
+  "enabled_by_default": true,
+  "access": "public",
+  "status": "active",
+  "sources": [],
+  "last_reviewed": "2026-07-05"
+}
